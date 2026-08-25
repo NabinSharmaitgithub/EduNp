@@ -1,0 +1,16 @@
+"use client";
+
+import { createBrowserClient } from "@supabase/ssr";
+
+let client: ReturnType<typeof createBrowserClient> | null = null;
+
+/** Lazy singleton — safe to call in event handlers/effects only. */
+export function sb() {
+  if (!client) {
+    client = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
+  }
+  return client;
+}

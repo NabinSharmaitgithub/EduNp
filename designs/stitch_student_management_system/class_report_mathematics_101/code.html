@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduAdmin - Class Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9fa",
+                        "on-surface-variant": "#434655",
+                        "tertiary-fixed-dim": "#c0c1ff",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-container": "#6cf8bb",
+                        "surface-tint": "#0053db",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "surface": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-fixed": "#00174b",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#f1eeff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#2f2ebe",
+                        "primary": "#004ac6",
+                        "tertiary-container": "#585be6",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-primary": "#b4c5ff",
+                        "outline": "#737686",
+                        "outline-variant": "#c3c6d7",
+                        "on-surface": "#191c1d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-fixed": "#e1e0ff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed": "#002113",
+                        "secondary": "#006c49",
+                        "on-tertiary-fixed": "#07006c",
+                        "inverse-surface": "#2e3132",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d9dadb",
+                        "tertiary": "#3e3fcc",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-secondary-container": "#00714d",
+                        "surface-bright": "#f8f9fa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "margin-desktop": "40px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md text-body-md text-on-surface bg-background flex h-full overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-surface dark:bg-surface-dim shadow-sm flex flex-col py-md px-md z-20">
+<div class="flex items-center gap-sm px-sm mb-xl">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">EduAdmin</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant px-sm mb-lg uppercase tracking-wider">Academic Management</p>
+<nav class="flex-1 flex flex-col gap-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">school</span>
+<span>My Classes</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 text-primary font-bold border-r-4 border-primary bg-primary-fixed dark:bg-primary-fixed-dim" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<button class="mt-auto flex items-center justify-center gap-sm w-full bg-secondary text-on-secondary py-sm rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+            Add Student
+        </button>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[280px] flex flex-col h-full">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-lg z-10">
+<div class="flex items-center gap-md w-1/3">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary text-body-sm h-10 outline-none" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-all p-2 rounded-full cursor-pointer transition-opacity active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-all p-2 rounded-full cursor-pointer transition-opacity active:opacity-80">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a school administrator in a modern office setting. The lighting is soft and bright, reflecting a calm and organized environment. Neutral background to emphasize professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBroSmTyoQm0UpKY3VKqqy9oCOwaI1VsD8Vx_smCYVUSwxMO6wEfGfyL0htEdZSnCzFv_Qyivg-k6mK7AUOaBHufK8tUrblrT55Q9BUPD29rQVztLT25D2_rdWvPbJkw2sxNLgK-NHdqRM3_XrV-NOBdaowtpltcJEY5MKjHacB8K912zijYHPICPQCvht9E7EU8iCzudil3Bq_ietIgY_I4zrm_T36iKJsCJdbCcBmBYboRscABT2nE45E49lcIWhREf0HpuAJeMk1"/>
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto pt-24 px-gutter pb-xl">
+<!-- Breadcrumb -->
+<nav class="flex items-center text-label-sm font-label-sm text-on-surface-variant mb-md space-x-2">
+<a class="hover:text-primary transition-colors" href="#">My Classes</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Mathematics 101</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface">Class Report</span>
+</nav>
+<!-- Page Header & Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xl">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Class Report — Mathematics 101</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Term 2 Performance Summary</p>
+</div>
+<div class="flex items-center gap-sm">
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg pl-md pr-10 py-2 font-label-md text-label-md text-on-surface focus:ring-2 focus:ring-primary outline-none">
+<option>Exam Term: All Terms</option>
+<option>Term 1</option>
+<option>Term 2</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+</div>
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">print</span>
+                        Print
+                    </button>
+<button class="flex items-center gap-xs px-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity shadow-sm">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export CSV
+                    </button>
+</div>
+</div>
+<!-- Summary Strip -->
+<div class="flex gap-md mb-lg">
+<div class="flex-1 bg-surface-container-lowest rounded-xl p-md border border-outline-variant/50 shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Class Average</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">78%</p>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-xl p-md border border-outline-variant/50 shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Highest Score</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">Ava Thompson <span class="text-secondary ml-1">94%</span></p>
+</div>
+</div>
+<div class="flex-1 bg-[#fff8e6] rounded-xl p-md border border-[#ffe082]/50 shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-[#ffe082] flex items-center justify-center text-[#ff8f00]">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-[#ff8f00] mb-xs">Needs Attention</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">2 Students</p>
+</div>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="bg-surface-container-lowest rounded-t-xl p-md border-x border-t border-outline-variant/50 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-wrap gap-md items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="relative">
+<select class="appearance-none bg-surface-container border border-outline-variant/50 rounded-md pl-sm pr-8 py-1.5 font-body-sm text-body-sm text-on-surface focus:ring-1 focus:ring-primary outline-none">
+<option>All Subjects</option>
+<option>Math</option>
+<option>Physics</option>
+<option>Chemistry</option>
+</select>
+<span class="material-symbols-outlined text-sm absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+</div>
+</div>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-8 pr-3 py-1.5 bg-surface-container rounded-md border border-outline-variant/50 focus:ring-1 focus:ring-primary text-body-sm outline-none" placeholder="Search student..." type="text"/>
+</div>
+</div>
+<!-- Performance Table -->
+<div class="bg-surface-container-lowest rounded-b-xl border border-outline-variant/50 shadow-[0_2px_8px_rgba(0,0,0,0.05)] overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant/50">
+<th class="py-3 px-4 w-16 text-center">Rank</th>
+<th class="py-3 px-4">Student</th>
+<th class="py-3 px-4 w-24 text-center">Math</th>
+<th class="py-3 px-4 w-24 text-center">Physics</th>
+<th class="py-3 px-4 w-24 text-center">Chem</th>
+<th class="py-3 px-4 w-48">Average %</th>
+<th class="py-3 px-4 w-20 text-center">Grade</th>
+<th class="py-3 px-4 w-20 text-center">Trend</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<!-- Row 1 -->
+<tr class="border-b border-outline-variant/20 hover:bg-primary-fixed/30 transition-colors bg-primary-fixed/20">
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-[#ffc107]" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A portrait of a cheerful female high school student in a modern classroom setting. Bright, natural lighting highlights a studious and positive atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEFbc1hEpsbTBfge6NzdfO-L4KqR1CinNYWGoNBLJTNLH26FMbdhXo_Hz16yhsgy1wDw2VZ9m2t-YCbqFML7-g945suB3kHH7fxwstVeo3GuzI41Lne4K7IeQ1vTjka_q1kmu2SKXYG_BfsPdh86wnb2gK3LEaEw3IM4pDC87jE9LIP0qfNeTAYqdEZErZSD55My61KH5KKQDP5PgimHMbQ6UwHV_76iNsmDFRs7ifwTeReyZJn1opIErUFZ5GEtaGy9DyQBR32pUC"/>
+<span class="font-medium text-on-surface">Ava Thompson</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">98</td>
+<td class="py-3 px-4 text-center">92</td>
+<td class="py-3 px-4 text-center">92</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">94%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 94%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-secondary-container text-on-secondary-container">A+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors bg-surface">
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-[#9e9e9e]" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">LD</div>
+<span class="font-medium text-on-surface">Liam Davis</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">88</td>
+<td class="py-3 px-4 text-center">94</td>
+<td class="py-3 px-4 text-center">90</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">90%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 90%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-secondary-container text-on-secondary-container">A</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">trending_flat</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-[#cd7f32]" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A portrait of a male teenage student holding a notebook, standing in a brightly lit school hallway. Professional, clean, and optimistic vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4Y7kyQCXG_AFa98An17sJMAiN9BtLmaQ0yJrEU2pFkHlDLz4zk8JAzAs4OqAmi50OetuirFmx5fOYavNIvRMrVCrMCa3h-zpQdqcEwwibDWSiOVeV7U6MnpWDmUcIRswSVOj4_9GAKlzd7FYcBmiT0n4r8_53MzPj4xhH5gmDw7BA_4ZUDPjj3x6mVabMG_wQdQuphfFgtE-QJHT2VgHx5QiNMakt0o-EZVDKYh4dIdkwHy6IXk8DLHqXP6PqQoirnBcauFhRXgCz"/>
+<span class="font-medium text-on-surface">Noah Wilson</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">90</td>
+<td class="py-3 px-4 text-center">85</td>
+<td class="py-3 px-4 text-center">88</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">87%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 87%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-secondary-container text-on-secondary-container">A-</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors bg-surface">
+<td class="py-3 px-4 text-center">4</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-bold text-xs">EM</div>
+<span class="font-medium text-on-surface">Emma Martinez</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">82</td>
+<td class="py-3 px-4 text-center">86</td>
+<td class="py-3 px-4 text-center">80</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">82%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 82%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-tertiary-fixed text-on-tertiary-fixed">B+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 text-center">5</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A portrait of a thoughtful student looking slightly off-camera in a library. Soft, diffused lighting emphasizes a quiet academic setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbuNAWHx0JVMsRgvCaLbccsjqu0jFz_T5INIc-ZNJWikLwkFmW0ifT-Sp80BvLcXNDQd3TbM27Oe4J-N3WgI-14lC_tyr6CtNiNDO4_yxEkqURHm9nU4awUBW0QrLaqDgo69z69cWaTRegN3qWu9qk9fpHqLMfY_kig09nLGb9jnrqB9GF2LXQtZWHUSD-B6KscWy1hBYtBdOOnzvDCk528roJ246t4RVIFwZ9tJSa7YdwLdseoJQlJG9vQEZ2e7RlmeVkHrHjJse5"/>
+<span class="font-medium text-on-surface">Oliver Brown</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">78</td>
+<td class="py-3 px-4 text-center">75</td>
+<td class="py-3 px-4 text-center">82</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">78%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 78%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-primary-fixed text-on-primary-fixed">B</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-error text-sm">trending_down</span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors bg-surface">
+<td class="py-3 px-4 text-center">6</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-bold text-xs">SJ</div>
+<span class="font-medium text-on-surface">Sophia Johnson</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">70</td>
+<td class="py-3 px-4 text-center">72</td>
+<td class="py-3 px-4 text-center">74</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">72%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 72%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-surface-variant text-on-surface">C+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">trending_flat</span>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 text-center">7</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A portrait of a male student wearing glasses, standing in front of a white board covered in mathematical equations. Bright lighting, focused expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQGwgKCSeFN3-iDOVREwFQe3noQWXVcSHrA19Vz4tUwiu_HjnqYE-5DpCsVKqYjjHJhMh_wTyGYyE0aQcba_5YSOY9D1UrbK0Kr2O-gC5Rmypzu1lnoBlGbj0WYpaVWvajh0J5s-MI2ga8BXSOFrC9Mdr1-lQBKxFANXcP-w0KJ1c-dHOPOAPkE3D5KW0u0GyoGb9lmQruSmEGFNRnKA6Qk-3ph-Yz9wYyVQn1aQlH6Ul-HAtf9R2LJCZjw4h7nJX6RbsvMIBNSnKu"/>
+<span class="font-medium text-on-surface">William Taylor</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">65</td>
+<td class="py-3 px-4 text-center">68</td>
+<td class="py-3 px-4 text-center">62</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">65%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-surface-variant text-on-surface">C</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-error text-sm">trending_down</span>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors bg-surface">
+<td class="py-3 px-4 text-center">8</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-[#ffecb3] flex items-center justify-center text-[#ff8f00] font-bold text-xs">IM</div>
+<span class="font-medium text-on-surface">Isabella Moore</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">55</td>
+<td class="py-3 px-4 text-center">58</td>
+<td class="py-3 px-4 text-center">61</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">58%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-[#ffb300] rounded-full" style="width: 58%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-[#ffecb3] text-[#ff8f00]">D</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+</td>
+</tr>
+<!-- Row 9 -->
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 text-center">9</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-[#ffecb3] flex items-center justify-center text-[#ff8f00] font-bold text-xs">JW</div>
+<span class="font-medium text-on-surface">James White</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">45</td>
+<td class="py-3 px-4 text-center">50</td>
+<td class="py-3 px-4 text-center">48</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">47%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-[#ffb300] rounded-full" style="width: 47%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-[#ffecb3] text-[#ff8f00]">D-</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">trending_flat</span>
+</td>
+</tr>
+<!-- Row 10 -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface">
+<td class="py-3 px-4 text-center">10</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center text-on-error-container font-bold text-xs">MA</div>
+<span class="font-medium text-on-surface">Mia Anderson</span>
+</div>
+</td>
+<td class="py-3 px-4 text-center">35</td>
+<td class="py-3 px-4 text-center">40</td>
+<td class="py-3 px-4 text-center">38</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<span class="w-8">37%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 37%"></div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-error-container text-on-error-container">F</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="material-symbols-outlined text-error text-sm">trending_down</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-md text-right text-label-sm font-label-sm text-on-surface-variant">
+                Showing 1-10 of 28 students
+            </div>
+</main>
+</div>
+<!-- Toast Notification -->
+<div class="fixed bottom-lg right-lg bg-[#e8f5e9] border border-[#a5d6a7] text-[#2e7d32] px-md py-sm rounded-lg shadow-[0_10px_20px_rgba(0,0,0,0.1)] flex items-center gap-sm z-50 transform transition-transform duration-300 translate-y-0">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-body-sm text-body-sm">Report exported successfully</span>
+<button class="ml-4 text-[#2e7d32] hover:opacity-70 cursor-pointer">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</body></html>

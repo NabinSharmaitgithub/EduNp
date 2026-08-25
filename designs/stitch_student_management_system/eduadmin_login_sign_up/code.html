@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduAdmin - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary-container": "#bc4800",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container": "#e5eeff",
+                        "on-secondary-container": "#00714d",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-tint": "#0053db",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-surface-variant": "#434655",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-primary-fixed": "#00174b",
+                        "tertiary": "#943700",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "on-primary-container": "#eeefff",
+                        "outline": "#737686",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-container": "#6cf8bb",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "on-surface": "#0b1c30",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed": "#002113",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffede6",
+                        "on-secondary-fixed-variant": "#005236",
+                        "inverse-primary": "#b4c5ff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#213145",
+                        "secondary": "#006c49",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "12px": "12px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-margin": "24px",
+                        "section-gap": "32px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "gutter": "16px",
+                        "card-padding": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen font-body-md text-on-surface antialiased flex flex-col md:flex-row">
+<!-- Left Panel: Branding & Visuals -->
+<div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-primary-container to-primary relative overflow-hidden flex-col justify-between p-container-margin md:p-12">
+<!-- Abstract Shapes -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<svg class="absolute top-10 left-10 w-64 h-64 text-white animate-pulse" fill="currentColor" viewbox="0 0 200 200">
+<path d="M45,-78.1C58.3,-71.4,69.1,-58.5,77.5,-44.1C85.9,-29.7,91.8,-14.9,90.2,-0.9C88.6,13.1,79.5,26.2,69.5,37.2C59.5,48.2,48.5,57.1,35.6,65.3C22.7,73.5,8,80.9,-6.2,84.5C-20.4,88.1,-34.1,87.9,-46.8,81.3C-59.5,74.7,-71.1,61.7,-80.1,46.7C-89.1,31.7,-95.5,14.8,-95.1,-2C-94.7,-18.8,-87.5,-35.6,-76.3,-48.9C-65.1,-62.2,-49.9,-72.1,-35.3,-78.1C-20.7,-84.1,-6.6,-86.2,8.6,-87.6C23.8,-89,31.7,-84.8,45,-78.1Z" transform="translate(100 100)"></path>
+</svg>
+<svg class="absolute bottom-10 right-10 w-72 h-72 text-surface-container-highest animate-bounce" fill="currentColor" style="animation-duration: 10s;" viewbox="0 0 200 200">
+<path d="M60.1,-60.9C76.2,-44.1,86.5,-22.1,87.2,0.7C87.9,23.5,79.1,47,63,61.8C47,76.5,23.5,82.5,0.4,82C-22.7,81.6,-45.4,74.7,-60.5,60C-75.6,45.4,-83.1,22.7,-82.9,0.2C-82.7,-22.3,-74.8,-44.6,-59.7,-61.4C-44.6,-78.2,-22.3,-89.5,-0.1,-89.4C22.1,-89.3,44.1,-77.7,60.1,-60.9Z" transform="translate(100 100)"></path>
+</svg>
+</div>
+<div class="relative z-10">
+<h1 class="font-display-lg text-display-lg text-on-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">school</span>
+                EduAdmin
+            </h1>
+<p class="font-headline-md text-headline-md text-primary-fixed-dim max-w-md">
+                Student Management made simple.
+            </p>
+</div>
+<div class="relative z-10 text-primary-fixed font-label-md text-label-md">
+            Providing modern administrative tools since 2024.
+        </div>
+</div>
+<!-- Right Panel: Login Form -->
+<div class="w-full md:w-1/2 flex flex-col justify-center items-center p-container-margin relative">
+<!-- Mobile Header (Visible only on small screens) -->
+<div class="md:hidden w-full text-center mb-8">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary flex items-center justify-center gap-2 mb-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+                EduAdmin
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Student Management made simple.</p>
+</div>
+<!-- Login Card -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-12px p-card-padding shadow-[0_4px_6px_-1px_rgb(0,0,0,0.1),0_2px_4px_-2px_rgb(0,0,0,0.1)] border border-[#E2E8F0]">
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant mb-6">
+<button class="flex-1 pb-3 text-center font-title-lg text-title-lg text-primary border-b-2 border-primary">
+                    Login
+                </button>
+<button class="flex-1 pb-3 text-center font-title-lg text-title-lg text-on-surface-variant hover:text-primary transition-colors">
+                    Sign Up
+                </button>
+</div>
+<div class="mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Welcome back</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Please enter your details to sign in.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-stack-md" onsubmit="event.preventDefault();">
+<!-- Email -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
+<input class="px-4 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary placeholder-slate-400 text-body-md font-body-md bg-surface-container-lowest" id="email" placeholder="admin@eduadmin.com" type="email"/>
+</div>
+<!-- Password -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<input class="w-full px-4 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary placeholder-slate-400 text-body-md font-body-md bg-surface-container-lowest pr-10" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center gap-2 mt-1">
+<input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" id="remember" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant" for="remember">Remember me for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="mt-4 w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-md hover:bg-on-primary-fixed-variant transition-colors shadow-sm active:shadow-inner active:scale-[0.98]" type="submit">
+                    Sign In
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center py-6">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink-0 mx-4 font-label-sm text-label-sm text-on-surface-variant">or continue with</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Google Sign In -->
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container-lowest text-on-surface font-label-md text-label-md py-2.5 rounded-md border border-slate-200 hover:bg-surface-bright transition-colors shadow-sm" type="button">
+<img alt="" class="w-5 h-5 object-contain" data-alt="A small, isolated Google G logo icon in standard brand colors on a transparent background, flat design, high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6puh_GHqAj8sowBPKhDz-_yHyFvy1jE82EUpNu1gvSMKMlgXXPhmXJtPIbQEajuBXczq_wOIwGvgULEYZ-uBaESsnKxAx1WaVP4mZ5fao9gcc3XqjgOl4dzxZBR6V53pPI48e0NuTAMnq3ZhPXQ4JDBMIfBmWmYtiq-4X2vBr2mGUZBznPI-UYrIRK4wHfljeA39gzHKe_ykkSkfigKBPtkmE0VaB2GKUappDd5ox2fPP_TrSesPLgeS31idf25BxMMDLDOoWwPJE"/>
+                Sign in with Google
+            </button>
+<div class="mt-6 text-center font-body-sm text-body-sm text-on-surface-variant">
+                Don't have an account? <a class="text-primary font-medium hover:underline" href="#">Sign up</a>
+</div>
+</div>
+<!-- Footer -->
+<div class="absolute bottom-6 font-label-sm text-label-sm text-outline">
+            © 2026 EduAdmin. Student Management made simple.
+        </div>
+</div>
+</body></html>
