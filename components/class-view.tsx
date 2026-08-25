@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
-import { deleteStudent, saveStudent } from "@/app/actions";
+import { deleteStudent, saveStudent, type StudentInput } from "@/app/actions";
 import { Icon } from "@/components/icon";
 import { useToast } from "@/components/toast";
 import { Avatar, EmptyState, Field, GradePill, Modal, Progress, Spinner, btnOutline, btnPrimary, inputCls } from "@/components/ui";
 import { computeStudentStats } from "@/lib/stats";
+import { BLOOD_GROUPS } from "@/lib/types";
 import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
-
-type Editable = { id?: string; name: string; roll_number: string };
 
 export function ClassView({
   cls,
@@ -184,7 +183,7 @@ export function ClassView({
         onClose={() => setModal({ open: false })}
         onSubmit={(v) => {
           run(
-            () => saveStudent({ id: v.id, class_id: cls.id, name: v.name, roll_number: v.roll_number }),
+            () => saveStudent({ ...v, class_id: cls.id }),
             v.id ? "Student updated" : `${v.name} added`,
           );
           setModal({ open: false });
@@ -202,32 +201,106 @@ function StudentModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (v: Editable) => void;
+  onSubmit: (v: StudentInput) => void;
   initial?: StudentRow;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
   const [roll, setRoll] = useState(initial?.roll_number ?? "");
-  const [errors, setErrors] = useState<{ name?: string; roll?: string }>({});
+  const [dob, setDob] = useState(initial?.date_of_birth ?? "");
+  const [gender, setGender] = useState(initial?.gender ?? "");
+  const [fatherName, setFatherName] = useState(initial?.father_name ?? "");
+  const [fatherOcc, setFatherOcc] = useState(initial?.father_occupation ?? "");
+  const [motherName, setMotherName] = useState(initial?.mother_name ?? "");
+  const [motherOcc, setMotherOcc] = useState(initial?.mother_occupation ?? "");
+  const [guardianPhone, setGuardianPhone] = useState(initial?.guardian_contact_number ?? "");
+  const [emergencyPhone, setEmergencyPhone] = useState(initial?.emergency_contact_number ?? "");
+  const [address, setAddress] = useState(initial?.student_address ?? "");
+  const [iems, setIems] = useState(initial?.iems_number ?? "");
+  const [admissionDate, setAdmissionDate] = useState(initial?.admission_date ?? "");
+  const [bloodGroup, setBloodGroup] = useState(initial?.blood_group ?? "");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const errs: typeof errors = {};
+    const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = "Full name is required.";
     if (!roll.trim()) errs.roll = "Roll number is required.";
+    if (guardianPhone && !/^\d{7,15}$/.test(guardianPhone)) errs.guardianPhone = "Must be 7-15 digits.";
+    if (emergencyPhone && !/^\d{7,15}$/.test(emergencyPhone)) errs.emergencyPhone = "Must be 7-15 digits.";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    onSubmit({ id: initial?.id, name, roll_number: roll });
+    onSubmit({
+      id: initial?.id, name, roll_number: roll,
+      date_of_birth: dob || undefined, gender: gender || undefined,
+      father_name: fatherName || undefined, father_occupation: fatherOcc || undefined,
+      mother_name: motherName || undefined, mother_occupation: motherOcc || undefined,
+      guardian_contact_number: guardianPhone || undefined, emergency_contact_number: emergencyPhone || undefined,
+      student_address: address || undefined, iems_number: iems || undefined,
+      admission_date: admissionDate || undefined, blood_group: bloodGroup || undefined,
+    });
   }
 
   return (
     <Modal open={open} onClose={onClose} title={initial ? "Edit Student" : "Add Student"}>
-      <form className="flex flex-col gap-4" onSubmit={submit} noValidate>
-        <Field label="Full Name" error={errors.name}>
-          <input className={inputCls} placeholder="Ava Thompson" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-        </Field>
-        <Field label="Roll Number" error={errors.roll}>
-          <input className={inputCls} placeholder="12" value={roll} onChange={(e) => setRoll(e.target.value)} />
-        </Field>
+      <form className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-2" onSubmit={submit} noValidate>
+        <h4 className="text-title-sm font-semibold text-primary">Personal Information</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Full Name" error={errors.name}>
+            <input className={inputCls} placeholder="Ava Thompson" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+          </Field>
+          <Field label="Roll Number" error={errors.roll}>
+            <input className={inputCls} placeholder="12" value={roll} onChange={(e) => setRoll(e.target.value)} />
+          </Field>
+          <Field label="Date of Birth">
+            <input type="date" className={inputCls} value={dob} onChange={(e) => setDob(e.target.value)} />
+          </Field>
+          <Field label="Gender">
+            <select className={inputCls} value={gender} onChange={(e) => setGender(e.target.value)}>
+              <option value="">Select…</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </Field>
+          <Field label="IEMS Number">
+            <input className={inputCls} placeholder="Unique student ID" value={iems} onChange={(e) => setIems(e.target.value)} />
+          </Field>
+          <Field label="Blood Group">
+            <select className={inputCls} value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)}>
+              <option value="">Select…</option>
+              {BLOOD_GROUPS.map((bg) => <option key={bg} value={bg}>{bg}</option>)}
+            </select>
+          </Field>
+          <Field label="Admission Date">
+            <input type="date" className={inputCls} value={admissionDate} onChange={(e) => setAdmissionDate(e.target.value)} />
+          </Field>
+          <Field label="Address">
+            <input className={inputCls} placeholder="123 Main St" value={address} onChange={(e) => setAddress(e.target.value)} />
+          </Field>
+        </div>
+
+        <h4 className="text-title-sm font-semibold text-primary mt-2">Parent / Guardian</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Father's Name">
+            <input className={inputCls} value={fatherName} onChange={(e) => setFatherName(e.target.value)} />
+          </Field>
+          <Field label="Father's Occupation">
+            <input className={inputCls} value={fatherOcc} onChange={(e) => setFatherOcc(e.target.value)} />
+          </Field>
+          <Field label="Mother's Name">
+            <input className={inputCls} value={motherName} onChange={(e) => setMotherName(e.target.value)} />
+          </Field>
+          <Field label="Mother's Occupation">
+            <input className={inputCls} value={motherOcc} onChange={(e) => setMotherOcc(e.target.value)} />
+          </Field>
+          <Field label="Guardian Contact" error={errors.guardianPhone}>
+            <input className={inputCls} placeholder="Phone number" value={guardianPhone} onChange={(e) => setGuardianPhone(e.target.value)} />
+          </Field>
+          <Field label="Emergency Contact" error={errors.emergencyPhone}>
+            <input className={inputCls} placeholder="Phone number (optional)" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} />
+          </Field>
+        </div>
+
         <div className="flex justify-end gap-2 mt-2">
           <button type="button" className={btnOutline} onClick={onClose}>Cancel</button>
           <button type="submit" className={btnPrimary}>

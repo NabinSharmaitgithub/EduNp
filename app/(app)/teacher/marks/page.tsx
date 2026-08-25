@@ -15,7 +15,7 @@ export default async function TeacherMarksPage() {
 
   const [classes, students, marks, subjects] = await Promise.all([
     classIds.length > 0 ? sb.from('classes').select('*').in('id', classIds) : { data: [] },
-    classIds.length > 0 ? sb.from('students').select('id,name,roll_number,class_id').in('class_id', classIds) : { data: [] },
+    classIds.length > 0 ? sb.from('students').select('*').in('class_id', classIds) : { data: [] },
     sb.from('marks').select('id,student_id,subject_id,exam_term,marks_obtained,max_marks'),
     subjectIds.length > 0 ? sb.from('subjects').select('*').in('id', subjectIds) : { data: [] },
   ])

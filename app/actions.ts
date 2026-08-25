@@ -28,14 +28,45 @@ export async function deleteClass(id: string) {
   return {}
 }
 
-export async function saveStudent(values: { name: string; roll_number: string; class_id: string; parent_id?: string; id?: string }) {
+export type StudentInput = {
+  name: string; roll_number: string; class_id?: string; parent_id?: string; id?: string
+  date_of_birth?: string; gender?: string
+  father_name?: string; father_occupation?: string
+  mother_name?: string; mother_occupation?: string
+  guardian_contact_number?: string; emergency_contact_number?: string
+  student_address?: string; iems_number?: string
+  admission_date?: string; blood_group?: string; photo_url?: string
+}
+
+export async function saveStudent(values: StudentInput) {
   const supabase = await createClient()
+
+  if (values.iems_number) {
+    const { data: existingIems } = await supabase
+      .from('students').select('id').eq('iems_number', values.iems_number).single()
+    if (existingIems && existingIems.id !== values.id) {
+      return { error: 'A student with this IEMS Number already exists.' }
+    }
+  }
+
+  const row = {
+    name: values.name, roll_number: values.roll_number, parent_id: values.parent_id || null,
+    date_of_birth: values.date_of_birth || null, gender: values.gender || null,
+    father_name: values.father_name || null, father_occupation: values.father_occupation || null,
+    mother_name: values.mother_name || null, mother_occupation: values.mother_occupation || null,
+    guardian_contact_number: values.guardian_contact_number || null,
+    emergency_contact_number: values.emergency_contact_number || null,
+    student_address: values.student_address || null, iems_number: values.iems_number || null,
+    admission_date: values.admission_date || null, blood_group: values.blood_group || null,
+    photo_url: values.photo_url || null,
+  }
+
   if (values.id) {
-    const { error } = await supabase.from('students').update({ name: values.name, roll_number: values.roll_number, parent_id: values.parent_id || null }).eq('id', values.id)
+    const { error } = await supabase.from('students').update(row).eq('id', values.id)
     if (error) return { error: error.message }
     await logAuditEvent('update', 'students', values.id, values)
   } else {
-    const { data, error } = await supabase.from('students').insert({ name: values.name, roll_number: values.roll_number, class_id: values.class_id, parent_id: values.parent_id || null }).select().single()
+    const { data, error } = await supabase.from('students').insert({ ...row, class_id: values.class_id }).select().single()
     if (error) return { error: error.message }
     await logAuditEvent('create', 'students', data.id, values)
   }

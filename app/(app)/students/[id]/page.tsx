@@ -7,7 +7,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const sb = await createClient();
   const [student, marks, subjects] = await Promise.all([
-    sb.from("students").select("id,name,roll_number,class_id").eq("id", id).single(),
+    sb.from("students").select("*").eq("id", id).single(),
     sb.from("marks").select("id,student_id,subject_id,exam_term,marks_obtained,max_marks").eq("student_id", id),
     sb.from("subjects").select("*").order("name"),
   ]);

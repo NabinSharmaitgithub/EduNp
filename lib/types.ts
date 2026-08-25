@@ -1,5 +1,13 @@
 export interface ClassRow { id: string; name: string; section: string | null; created_at: string }
-export interface StudentRow { id: string; name: string; roll_number: string; class_id: string; parent_id: string | null }
+export interface StudentRow {
+  id: string; name: string; roll_number: string; class_id: string; parent_id: string | null
+  date_of_birth: string | null; gender: string | null
+  father_name: string | null; father_occupation: string | null
+  mother_name: string | null; mother_occupation: string | null
+  guardian_contact_number: string | null; emergency_contact_number: string | null
+  student_address: string | null; iems_number: string | null
+  admission_date: string | null; blood_group: string | null; photo_url: string | null
+}
 export interface SubjectRow { id: string; name: string }
 export interface MarkRow { id: string; student_id: string; subject_id: string; exam_term: string; marks_obtained: number; max_marks: number }
 export interface StaffRow { id: string; name: string; email: string; role: 'principal' | 'teacher'; status: 'active' | 'removed'; user_id: string | null; created_at: string }
@@ -21,6 +29,7 @@ export interface UserProfile { role: UserRole; staffId?: string; parentId?: stri
 export const EXAM_TERMS = ['Midterm', 'Final', 'Quiz 1', 'Quiz 2', 'Assignment 1', 'Assignment 2'] as const
 export const DAYS_OF_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
 export const ATTENDANCE_STATUSES = ['present', 'absent', 'late'] as const
+export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const
 
 export function gradeOf(pct: number | null): { label: string; cls: string } {
   if (pct === null) return { label: '—', cls: 'bg-surface-container-high text-on-surface-variant' }

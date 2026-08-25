@@ -6,7 +6,7 @@ export default async function AttendancePage() {
   const sb = await createClient()
   const [classes, students, attendance] = await Promise.all([
     sb.from('classes').select('*').order('name'),
-    sb.from('students').select('id,name,roll_number,class_id'),
+    sb.from('students').select('*'),
     sb.from('attendance').select('*').order('date', { ascending: false }).limit(500),
   ])
   return (

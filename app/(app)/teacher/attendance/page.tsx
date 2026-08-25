@@ -14,7 +14,7 @@ export default async function TeacherAttendancePage() {
 
   const [classes, students, attendance] = await Promise.all([
     classIds.length > 0 ? sb.from('classes').select('*').in('id', classIds) : { data: [] },
-    classIds.length > 0 ? sb.from('students').select('id,name,roll_number,class_id').in('class_id', classIds) : { data: [] },
+    classIds.length > 0 ? sb.from('students').select('*').in('class_id', classIds) : { data: [] },
     classIds.length > 0 ? sb.from('attendance').select('*').order('date', { ascending: false }).limit(500) : { data: [] },
   ])
 

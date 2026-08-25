@@ -6,7 +6,7 @@ export default async function FeesPage() {
   const sb = await createClient()
   const [fees, students, classes] = await Promise.all([
     sb.from('fees').select('*').order('created_at', { ascending: false }),
-    sb.from('students').select('id,name,roll_number,class_id'),
+    sb.from('students').select('*'),
     sb.from('classes').select('*'),
   ])
   return (

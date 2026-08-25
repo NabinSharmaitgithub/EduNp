@@ -18,7 +18,7 @@ export default async function TeacherDashboardPage() {
 
   const [classes, students, marks, subjects] = await Promise.all([
     sb.from('classes').select('*').in('id', classIds),
-    sb.from('students').select('id,name,roll_number,class_id').in('class_id', classIds),
+    sb.from('students').select('*').in('class_id', classIds),
     sb.from('marks').select('id,student_id,subject_id,exam_term,marks_obtained,max_marks'),
     sb.from('subjects').select('*'),
   ])

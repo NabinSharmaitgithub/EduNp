@@ -6,7 +6,7 @@ export default async function AdminAnalyticsPage() {
   const sb = await createClient()
   const [classes, students, marks, subjects, staff, fees, attendance] = await Promise.all([
     sb.from('classes').select('*').order('name'),
-    sb.from('students').select('id,name,roll_number,class_id'),
+    sb.from('students').select('*'),
     sb.from('marks').select('id,student_id,subject_id,exam_term,marks_obtained,max_marks'),
     sb.from('subjects').select('*').order('name'),
     sb.from('staff').select('*').eq('status', 'active'),

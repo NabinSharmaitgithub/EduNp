@@ -16,7 +16,7 @@ import {
   btnPrimary,
   inputCls,
 } from "@/components/ui";
-import { EXAM_TERMS } from "@/lib/types";
+import { BLOOD_GROUPS, EXAM_TERMS } from "@/lib/types";
 import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export function StudentView({
@@ -32,7 +32,7 @@ export function StudentView({
 }) {
   const toast = useToast();
   const [pending, startTransition] = useTransition();
-  const [tab, setTab] = useState<"marks" | "report">("marks");
+  const [tab, setTab] = useState<"info" | "marks" | "report">("info");
   // local mirror of marks so edits feel instant; server refresh keeps it honest
   const [marks, setMarks] = useState(initialMarks);
 
@@ -104,7 +104,7 @@ export function StudentView({
 
         {/* Tabs */}
         <div className="flex gap-6 border-b border-outline-variant mb-6">
-          {(["marks", "report"] as const).map((t) => (
+          {(["info", "marks", "report"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -112,12 +112,14 @@ export function StudentView({
                 tab === t ? "text-primary border-b-2 border-primary" : "text-on-surface-variant hover:text-primary"
               }`}
             >
-              {t === "marks" ? "Marks" : "Report Card"}
+              {t === "info" ? "Info" : t === "marks" ? "Marks" : "Report Card"}
             </button>
           ))}
         </div>
 
-        {tab === "marks" ? (
+        {tab === "info" ? (
+          <InfoTab student={student} cls={cls} />
+        ) : tab === "marks" ? (
           <MarksTab
             student={student}
             cls={cls}
@@ -503,6 +505,56 @@ function ReportTab({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/* ---------------- Info tab ---------------- */
+
+function InfoTab({ student, cls }: { student: StudentRow; cls: ClassRow | null }) {
+  const fields: { label: string; value: string | null }[] = [
+    { label: "IEMS Number", value: student.iems_number },
+    { label: "Roll Number", value: student.roll_number },
+    { label: "Class", value: cls ? `${cls.name}${cls.section ? " — " + cls.section : ""}` : null },
+    { label: "Date of Birth", value: student.date_of_birth },
+    { label: "Gender", value: student.gender },
+    { label: "Blood Group", value: student.blood_group },
+    { label: "Admission Date", value: student.admission_date },
+    { label: "Address", value: student.student_address },
+    { label: "Father's Name", value: student.father_name },
+    { label: "Father's Occupation", value: student.father_occupation },
+    { label: "Mother's Name", value: student.mother_name },
+    { label: "Mother's Occupation", value: student.mother_occupation },
+    { label: "Guardian Contact", value: student.guardian_contact_number },
+    { label: "Emergency Contact", value: student.emergency_contact_number },
+  ];
+
+  return (
+    <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/50 shadow-bloom overflow-hidden">
+      <div className="p-6 border-b border-outline-variant/30">
+        <h3 className="text-headline-sm font-bold">Student Information</h3>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/30">
+        <div className="divide-y divide-outline-variant/30">
+          {fields.slice(0, Math.ceil(fields.length / 2)).map((f) => (
+            <InfoRow key={f.label} label={f.label} value={f.value} />
+          ))}
+        </div>
+        <div className="divide-y divide-outline-variant/30">
+          {fields.slice(Math.ceil(fields.length / 2)).map((f) => (
+            <InfoRow key={f.label} label={f.label} value={f.value} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div className="flex justify-between items-center px-6 py-3.5">
+      <span className="text-body-sm text-on-surface-variant">{label}</span>
+      <span className="text-body-md font-medium text-on-surface text-right">{value || "—"}</span>
     </div>
   );
 }
