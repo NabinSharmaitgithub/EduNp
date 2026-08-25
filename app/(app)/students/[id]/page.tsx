@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { StudentView } from "@/components/student-view";
-import type { MarkRow, StudentRow, SubjectRow } from "@/lib/types";
+import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export default async function StudentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -13,10 +13,10 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
   ]);
   if (student.error || !student.data) notFound();
 
-  let cls: { id: string; name: string; section: string | null } | null = null;
+  let cls: ClassRow | null = null;
   if (student.data.class_id) {
-    const { data } = await sb.from("classes").select("id,name,section").eq("id", student.data.class_id).single();
-    cls = data;
+    const { data } = await sb.from("classes").select("id,name,section,created_at").eq("id", student.data.class_id).single();
+    cls = data as ClassRow | null;
   }
 
   return (

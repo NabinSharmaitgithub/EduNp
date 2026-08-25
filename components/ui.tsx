@@ -72,7 +72,7 @@ export function Progress({ pct }: { pct: number | null }) {
   return (
     <div className="flex items-center gap-2 min-w-32">
       <div className="flex-1 h-1.5 rounded-full bg-surface-container-high overflow-hidden">
-        <div className={`h-full rounded-full ${barColor(pct)}`} style={{ width: `${v}%` }} />
+        <div className={`h-full rounded-full ${barColor(pct ?? 0)}`} style={{ width: `${v}%` }} />
       </div>
       <span className="text-label-md text-on-surface-variant w-9 text-right">
         {pct === null ? "—" : `${Math.round(pct)}%`}

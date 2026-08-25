@@ -73,7 +73,7 @@ export function DashboardClient({
     e.preventDefault();
     if (!newSubject.trim()) return;
     setSubjectBusy(true);
-    const res = await saveSubject(newSubject);
+    const res = await saveSubject({ name: newSubject });
     setSubjectBusy(false);
     if (res.error) toast("error", res.error);
     else {

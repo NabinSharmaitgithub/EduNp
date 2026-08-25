@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ReportClient } from "@/components/report-client";
-import type { MarkRow, StudentRow, SubjectRow } from "@/lib/types";
+import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export default async function ClassReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,7 +16,7 @@ export default async function ClassReportPage({ params }: { params: Promise<{ id
 
   return (
     <ReportClient
-      cls={cls.data as { id: string; name: string; section: string | null }}
+      cls={cls.data as ClassRow}
       students={(students.data ?? []) as StudentRow[]}
       allMarks={(marks.data ?? []).filter((m: MarkRow) =>
         (students.data ?? []).some((s) => s.id === m.student_id),

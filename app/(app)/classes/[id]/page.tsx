@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ClassView } from "@/components/class-view";
-import type { MarkRow, StudentRow, SubjectRow } from "@/lib/types";
+import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export default async function ClassPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,7 +16,7 @@ export default async function ClassPage({ params }: { params: Promise<{ id: stri
 
   return (
     <ClassView
-      cls={cls.data as { id: string; name: string; section: string | null }}
+      cls={cls.data as ClassRow}
       students={(students.data ?? []) as StudentRow[]}
       marks={(marks.data ?? []) as MarkRow[]}
       subjects={(subjects.data ?? []) as SubjectRow[]}

@@ -274,7 +274,7 @@ function MarksTab({
                           const prev = marks;
                           setMarks(marks.filter((x) => x.id !== m.id)); // optimistic
                           run(async () => {
-                            const res = await deleteMark(m.id, student.id, cls?.id ?? "");
+                            const res = await deleteMark(m.id, student.id);
                             if (res.error) {
                               setMarks(prev);
                               return res;

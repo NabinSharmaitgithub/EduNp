@@ -1,60 +1,54 @@
-export interface ClassRow {
-  id: string;
-  name: string;
-  section: string | null;
-}
+export interface ClassRow { id: string; name: string; section: string | null; created_at: string }
+export interface StudentRow { id: string; name: string; roll_number: string; class_id: string; parent_id: string | null }
+export interface SubjectRow { id: string; name: string }
+export interface MarkRow { id: string; student_id: string; subject_id: string; exam_term: string; marks_obtained: number; max_marks: number }
+export interface StaffRow { id: string; name: string; email: string; role: 'principal' | 'teacher'; status: 'active' | 'removed'; user_id: string | null; created_at: string }
+export interface ParentRow { id: string; name: string; email: string; phone: string | null; user_id: string | null }
+export interface TeacherClassAssignment { id: string; teacher_id: string; class_id: string }
+export interface TeacherSubjectAssignment { id: string; teacher_id: string; subject_id: string; class_id: string }
+export interface AttendanceRow { id: string; student_id: string; class_id: string; date: string; status: 'present' | 'absent' | 'late' }
+export interface TimetableRow { id: string; class_id: string; subject_id: string; teacher_id: string; day_of_week: string; period_number: number; start_time: string; end_time: string }
+export interface FeeRow { id: string; student_id: string; amount_due: number; amount_paid: number; due_date: string; status: 'paid' | 'due' | 'overdue'; receipt_number: string | null; created_at: string }
+export interface AnnouncementRow { id: string; title: string; body: string; target: 'school' | 'class'; class_id: string | null; created_by: string; created_at: string }
+export interface ExamRow { id: string; name: string; class_id: string; start_date: string; end_date: string }
+export interface ExamDutyRow { id: string; exam_id: string; teacher_id: string; class_id: string; role: 'invigilator' | 'coordinator' }
+export interface LeaveRequestRow { id: string; staff_id: string; start_date: string; end_date: string; reason: string; status: 'pending' | 'approved' | 'rejected'; created_at: string }
+export interface AuditLogRow { id: string; actor_id: string | null; action: string; target_table: string; target_id: string | null; timestamp: string; details: Record<string, unknown> | null }
 
-export interface StudentRow {
-  id: string;
-  name: string;
-  roll_number: string;
-  class_id: string;
-}
+export type UserRole = 'principal' | 'teacher' | 'parent'
+export interface UserProfile { role: UserRole; staffId?: string; parentId?: string; name: string; email: string }
 
-export interface SubjectRow {
-  id: string;
-  name: string;
-}
-
-export interface MarkRow {
-  id: string;
-  student_id: string;
-  subject_id: string;
-  exam_term: string;
-  marks_obtained: number;
-  max_marks: number;
-}
-
-export interface StudentStat {
-  student: StudentRow;
-  bySubject: Record<string, { obtained: number; max: number }>;
-  total: number;
-  totalMax: number;
-  pct: number | null; // null = no marks yet
-}
-
-export const EXAM_TERMS = ["Term 1", "Term 2", "Term 3", "Final Exam"] as const;
+export const EXAM_TERMS = ['Midterm', 'Final', 'Quiz 1', 'Quiz 2', 'Assignment 1', 'Assignment 2'] as const
+export const DAYS_OF_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
+export const ATTENDANCE_STATUSES = ['present', 'absent', 'late'] as const
 
 export function gradeOf(pct: number | null): { label: string; cls: string } {
-  if (pct === null) return { label: "—", cls: "text-on-surface-variant bg-surface-container-high" };
-  if (pct >= 80) return { label: pct >= 93 ? "A+" : pct >= 87 ? "A" : "A-", cls: "text-secondary bg-secondary-container/30" };
-  if (pct >= 60) return { label: pct >= 73 ? "B+" : pct >= 67 ? "B" : "B-", cls: "text-primary bg-primary-fixed" };
-  if (pct >= 40) return { label: pct >= 53 ? "C+" : pct >= 47 ? "C" : "C-", cls: "text-tertiary bg-tertiary-fixed/60" };
-  return { label: "D", cls: "text-on-error-container bg-error-container" };
+  if (pct === null) return { label: '—', cls: 'bg-surface-container-high text-on-surface-variant' }
+  if (pct >= 90) return { label: 'A+', cls: 'bg-emerald-100 text-emerald-700' }
+  if (pct >= 80) return { label: 'A', cls: 'bg-emerald-100 text-emerald-700' }
+  if (pct >= 70) return { label: 'B+', cls: 'bg-blue-100 text-blue-700' }
+  if (pct >= 60) return { label: 'B', cls: 'bg-blue-100 text-blue-700' }
+  if (pct >= 50) return { label: 'C+', cls: 'bg-amber-100 text-amber-700' }
+  if (pct >= 40) return { label: 'C', cls: 'bg-amber-100 text-amber-700' }
+  if (pct >= 30) return { label: 'D', cls: 'bg-orange-100 text-orange-700' }
+  return { label: 'F', cls: 'bg-red-100 text-red-700' }
 }
 
-export function barColor(pct: number | null): string {
-  if (pct === null) return "bg-outline-variant";
-  if (pct >= 80) return "bg-secondary";
-  if (pct >= 60) return "bg-primary-container";
-  if (pct >= 40) return "bg-amber-500";
-  return "bg-error";
+export function barColor(pct: number): string {
+  if (pct >= 80) return 'bg-emerald-500'
+  if (pct >= 60) return 'bg-blue-500'
+  if (pct >= 40) return 'bg-amber-500'
+  return 'bg-red-500'
 }
 
 export function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? "")
-    .join("");
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
+export interface StudentStat {
+  student: StudentRow
+  bySubject: Record<string, { obtained: number; max: number }>
+  total: number
+  totalMax: number
+  pct: number | null
 }
