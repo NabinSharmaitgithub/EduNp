@@ -2,22 +2,111 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, generateTempPassword } from '@/lib/supabase/admin'
 import { logAuditEvent, getCurrentStaffId } from '@/lib/role'
+import type { StaffRole } from '@/lib/types'
 
-export async function createStaff(values: { name: string; email: string; role: string }) {
-  const supabase = await createClient()
-  const { data, error } = await supabase.from('staff').insert(values).select().single()
-  if (error) return { error: error.message }
-  await logAuditEvent('create', 'staff', data.id, values)
-  revalidatePath('/admin/staff')
-  return { data }
+const VALID_ROLES: StaffRole[] = ['teacher', 'admin', 'principal', 'helping_staff']
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+type CreateStaffInput = {
+  name: string; email: string; role: StaffRole
+  date_of_birth?: string; gender?: string; contact_number?: string
+  emergency_contact_number?: string; address?: string; qualification?: string
+  designation?: string; subject_specialization?: string; date_of_joining?: string
+  teacher_class_id?: string
+  teacher_subjects?: { subject_id: string; class_id: string }[]
 }
 
-export async function updateStaff(id: string, values: { name?: string; email?: string; role?: string; status?: string }) {
+export async function createStaff(input: CreateStaffInput) {
   const supabase = await createClient()
-  const { error } = await supabase.from('staff').update(values).eq('id', id)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  // Validate
+  const errs: string[] = []
+  if (!input.name.trim()) errs.push('Name is required')
+  if (!input.email.trim() || !emailRe.test(input.email)) errs.push('Valid email is required')
+  if (!VALID_ROLES.includes(input.role)) errs.push('Invalid role')
+  if (input.contact_number && !/^\d{7,15}$/.test(input.contact_number)) errs.push('Contact number must be 7-15 digits')
+  if (input.emergency_contact_number && !/^\d{7,15}$/.test(input.emergency_contact_number)) errs.push('Emergency contact must be 7-15 digits')
+  if (errs.length) return { error: errs.join('; ') }
+
+  // Check email uniqueness in staff
+  const { data: existing } = await supabase.from('staff').select('id').eq('email', input.email.trim()).limit(1)
+  if (existing && existing.length > 0) return { error: 'A staff member with this email already exists' }
+
+  // Create Supabase Auth user
+  const tempPassword = generateTempPassword(12)
+  const admin = createAdminClient()
+  const { data: authUser, error: authErr } = await admin.auth.admin.createUser({
+    email: input.email.trim(),
+    password: tempPassword,
+    email_confirm: true,
+  })
+  if (authErr) return { error: `Auth user creation failed: ${authErr.message}` }
+
+  // Insert staff row
+  const staffRow: Record<string, unknown> = {
+    name: input.name.trim(),
+    email: input.email.trim(),
+    role: input.role,
+    status: 'active',
+    user_id: authUser.user.id,
+    must_change_password: true,
+    date_of_birth: input.date_of_birth || null,
+    gender: input.gender || null,
+    contact_number: input.contact_number || null,
+    emergency_contact_number: input.emergency_contact_number || null,
+    address: input.address || null,
+    qualification: input.qualification || null,
+    designation: input.designation || null,
+    subject_specialization: input.subject_specialization || null,
+    date_of_joining: input.date_of_joining || null,
+  }
+
+  const { data: staff, error: staffErr } = await supabase.from('staff').insert(staffRow).select().single()
+  if (staffErr) {
+    // Rollback: delete the auth user we just created
+    await admin.auth.admin.deleteUser(authUser.user.id)
+    return { error: staffErr.message }
+  }
+
+  // If teacher, assign class teacher + subjects
+  if (input.role === 'teacher') {
+    if (input.teacher_class_id) {
+      await supabase.from('teacher_class_assignments').upsert({ teacher_id: staff.id, class_id: input.teacher_class_id })
+    }
+    if (input.teacher_subjects?.length) {
+      const rows = input.teacher_subjects.map(s => ({ teacher_id: staff.id, subject_id: s.subject_id, class_id: s.class_id }))
+      await supabase.from('teacher_subject_assignments').insert(rows)
+    }
+  }
+
+  await logAuditEvent('create', 'staff', staff.id, { name: staff.name, email: staff.email, role: staff.role })
+  revalidatePath('/admin/staff')
+  revalidatePath('/admin/assignments')
+  return { data: staff, tempPassword }
+}
+
+export async function updateStaff(id: string, values: {
+  name?: string; email?: string; role?: StaffRole; status?: string
+  date_of_birth?: string; gender?: string; contact_number?: string
+  emergency_contact_number?: string; address?: string; qualification?: string
+  designation?: string; subject_specialization?: string; date_of_joining?: string
+}) {
+  const supabase = await createClient()
+
+  if (values.contact_number && !/^\d{7,15}$/.test(values.contact_number)) return { error: 'Contact number must be 7-15 digits' }
+  if (values.emergency_contact_number && !/^\d{7,15}$/.test(values.emergency_contact_number)) return { error: 'Emergency contact must be 7-15 digits' }
+  if (values.email && !emailRe.test(values.email)) return { error: 'Invalid email format' }
+
+  const clean: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(values)) { if (v !== undefined) clean[k] = v || null }
+
+  const { error } = await supabase.from('staff').update(clean).eq('id', id)
   if (error) return { error: error.message }
-  await logAuditEvent('update', 'staff', id, values)
+  await logAuditEvent('update', 'staff', id, clean)
   revalidatePath('/admin/staff')
   return {}
 }
@@ -64,6 +153,28 @@ export async function removeSubjectTeacher(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('remove', 'teacher_subject_assignments', id)
   revalidatePath('/admin/assignments')
+  return {}
+}
+
+export async function updateTeacherAssignments(teacherId: string, classId: string | null, subjects: { subject_id: string; class_id: string }[]): Promise<{ error?: string }> {
+  const supabase = await createClient()
+
+  // Replace class teacher
+  await supabase.from('teacher_class_assignments').delete().eq('teacher_id', teacherId)
+  if (classId) {
+    await supabase.from('teacher_class_assignments').insert({ teacher_id: teacherId, class_id: classId })
+  }
+
+  // Replace subject assignments
+  await supabase.from('teacher_subject_assignments').delete().eq('teacher_id', teacherId)
+  if (subjects.length) {
+    const rows = subjects.map(s => ({ teacher_id: teacherId, subject_id: s.subject_id, class_id: s.class_id }))
+    await supabase.from('teacher_subject_assignments').insert(rows)
+  }
+
+  await logAuditEvent('update', 'teacher_assignments', teacherId, { classId, subjectCount: subjects.length })
+  revalidatePath('/admin/assignments')
+  revalidatePath(`/admin/staff/${teacherId}`)
   return {}
 }
 

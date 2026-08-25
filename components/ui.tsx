@@ -11,6 +11,9 @@ export const btnPrimary =
 export const btnOutline =
   "inline-flex items-center justify-center gap-2 bg-surface-container-lowest text-on-surface border border-outline-variant font-medium py-2.5 px-4 rounded-md hover:bg-surface-bright transition-colors shadow-sm disabled:opacity-60 disabled:pointer-events-none";
 
+export const btnDanger =
+  "inline-flex items-center justify-center gap-2 bg-error text-on-error font-medium py-2.5 px-4 rounded-md hover:bg-error/80 transition-colors shadow-sm active:shadow-inner active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none";
+
 export function Field({
   label,
   error,

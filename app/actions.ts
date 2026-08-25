@@ -141,3 +141,12 @@ export async function deleteMark(id: string, studentId: string) {
   revalidatePath(`/students/${studentId}`)
   return {}
 }
+
+export async function completePasswordChange() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { error } = await supabase.from('staff').update({ must_change_password: false }).eq('user_id', user.id)
+  if (error) return { error: error.message }
+  return {}
+}

@@ -10,7 +10,18 @@ export interface StudentRow {
 }
 export interface SubjectRow { id: string; name: string }
 export interface MarkRow { id: string; student_id: string; subject_id: string; exam_term: string; marks_obtained: number; max_marks: number }
-export interface StaffRow { id: string; name: string; email: string; role: 'principal' | 'teacher'; status: 'active' | 'removed'; user_id: string | null; created_at: string }
+export interface StaffRow {
+  id: string; name: string; email: string
+  role: 'teacher' | 'admin' | 'principal' | 'helping_staff'
+  status: 'active' | 'removed'; user_id: string | null; created_at: string
+  date_of_birth: string | null; gender: string | null
+  contact_number: string | null; emergency_contact_number: string | null
+  address: string | null; qualification: string | null; designation: string | null
+  subject_specialization: string | null; date_of_joining: string | null
+  photo_url: string | null; must_change_password: boolean | null
+}
+export const STAFF_ROLES = ['teacher', 'admin', 'principal', 'helping_staff'] as const
+export type StaffRole = typeof STAFF_ROLES[number]
 export interface ParentRow { id: string; name: string; email: string; phone: string | null; user_id: string | null }
 export interface TeacherClassAssignment { id: string; teacher_id: string; class_id: string }
 export interface TeacherSubjectAssignment { id: string; teacher_id: string; subject_id: string; class_id: string }

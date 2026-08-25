@@ -28,12 +28,41 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  if (!user && path !== "/login") {
+
+  // Unauthenticated users → login
+  if (!user && path !== "/login" && path !== "/set-password") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  // Authenticated users hitting login → dashboard
   if (user && path === "/login") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
+
+  // Check must_change_password for logged-in users
+  if (user && path !== "/set-password" && path !== "/login") {
+    const { data: staff } = await supabase
+      .from("staff")
+      .select("must_change_password")
+      .eq("user_id", user.id)
+      .single();
+    if (staff?.must_change_password === true) {
+      return NextResponse.redirect(new URL("/set-password", request.url));
+    }
+  }
+
+  // Users on /set-password who don't need it → dashboard
+  if (user && path === "/set-password") {
+    const { data: staff } = await supabase
+      .from("staff")
+      .select("must_change_password")
+      .eq("user_id", user.id)
+      .single();
+    if (staff?.must_change_password !== true) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
+
   return response;
 }
 

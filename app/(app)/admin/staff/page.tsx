@@ -1,17 +1,21 @@
 import { createClient } from '@/lib/supabase/server'
 import { StaffClient } from '@/components/admin/staff-client'
-import type { StaffRow, ParentRow } from '@/lib/types'
+import type { StaffRow, ParentRow, ClassRow, SubjectRow } from '@/lib/types'
 
 export default async function StaffPage() {
   const sb = await createClient()
-  const [staff, parents] = await Promise.all([
+  const [staff, parents, classes, subjects] = await Promise.all([
     sb.from('staff').select('*').order('name'),
     sb.from('parents').select('*').order('name'),
+    sb.from('classes').select('*').order('name'),
+    sb.from('subjects').select('*').order('name'),
   ])
   return (
     <StaffClient
       staff={(staff.data ?? []) as StaffRow[]}
       parents={(parents.data ?? []) as ParentRow[]}
+      classes={(classes.data ?? []) as ClassRow[]}
+      subjects={(subjects.data ?? []) as SubjectRow[]}
       error={staff.error?.message ?? parents.error?.message}
     />
   )
