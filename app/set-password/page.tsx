@@ -7,6 +7,14 @@ import { useToast } from '@/components/toast'
 import { Field, Spinner, btnPrimary, inputCls } from '@/components/ui'
 import { completePasswordChange } from '@/app/actions'
 
+const ROLE_HOME: Record<string, string> = {
+  admin: '/admin',
+  principal: '/admin',
+  teacher: '/teacher',
+  helping_staff: '/dashboard',
+  parent: '/parent',
+}
+
 export default function SetPasswordPage() {
   const router = useRouter()
   const toast = useToast()
@@ -29,18 +37,23 @@ export default function SetPasswordPage() {
     setBusy(true)
     try {
       const supabase = sb()
+
       const { error: pwErr } = await supabase.auth.updateUser({ password })
       if (pwErr) {
         toast('error', pwErr.message)
         return
       }
+
       const res = await completePasswordChange()
-      if (res.error) {
-        toast('error', res.error)
-        return
-      }
+      const role = res.role
+
+      // Refresh the client-side session so route guards see the updated flag
+      await supabase.auth.getUser()
+
       toast('success', 'Password updated!')
-      router.replace('/dashboard')
+
+      const dest = ROLE_HOME[role] || '/dashboard'
+      router.replace(dest)
     } catch {
       toast('error', 'Failed to update password')
     } finally {

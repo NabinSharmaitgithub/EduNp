@@ -146,7 +146,16 @@ export async function completePasswordChange() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
+
+  const { data: staff, error: fetchErr } = await supabase
+    .from('staff').select('role').eq('user_id', user.id).eq('status', 'active').single()
+  if (fetchErr || !staff) return { error: 'Staff profile not found' }
+
   const { error } = await supabase.from('staff').update({ must_change_password: false }).eq('user_id', user.id)
-  if (error) return { error: error.message }
-  return {}
+  if (error) {
+    console.error('Failed to clear must_change_password:', error.message)
+    // Still return role so the user isn't stuck
+  }
+
+  return { role: staff.role }
 }
