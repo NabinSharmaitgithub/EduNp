@@ -31,10 +31,10 @@ export async function createStaff(input: CreateStaffInput) {
   if (input.contact_number && !/^\d{7,15}$/.test(input.contact_number)) errs.push('Contact number must be 7-15 digits')
   if (input.emergency_contact_number && !/^\d{7,15}$/.test(input.emergency_contact_number)) errs.push('Emergency contact must be 7-15 digits')
 
-  // Only admin can create admin-role staff
-  if (input.role === 'admin') {
+  // Only admin can create admin/principal-role staff
+  if (input.role === 'admin' || input.role === 'principal') {
     const callerRole = await getUserRole()
-    if (callerRole !== 'admin') errs.push('Only an admin can create staff with the admin role')
+    if (callerRole !== 'admin') errs.push('Only an admin can create staff with the ' + input.role + ' role')
   }
 
   if (errs.length) return { error: errs.join('; ') }
@@ -108,16 +108,14 @@ export async function updateStaff(id: string, values: {
   if (values.emergency_contact_number && !/^\d{7,15}$/.test(values.emergency_contact_number)) return { error: 'Emergency contact must be 7-15 digits' }
   if (values.email && !emailRe.test(values.email)) return { error: 'Invalid email format' }
 
-  // Only admin can change role to/from admin
-  if (values.role === 'admin' || values.role === undefined) {
-    // If role is being set to admin, or if we're updating other fields on an admin row
-    const callerRole = await getUserRole()
-    if (callerRole !== 'admin') {
-      if (values.role === 'admin') return { error: 'Only an admin can change a staff member\'s role to admin' }
-      // Check if target is currently admin — principal can't edit admin rows
-      const { data: target } = await supabase.from('staff').select('role').eq('id', id).single()
-      if (target?.role === 'admin') return { error: 'Only an admin can modify an admin staff member' }
-    }
+  // Only admin can change role to/from admin or principal; only admin can edit admin/principal rows
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') {
+    if (values.role === 'admin' || values.role === 'principal')
+      return { error: 'Only an admin can change a staff member\'s role to ' + (values.role) }
+    const { data: target } = await supabase.from('staff').select('role').eq('id', id).single()
+    if (target?.role === 'admin' || target?.role === 'principal')
+      return { error: 'Only an admin can modify a ' + target!.role + ' staff member' }
   }
 
   const clean: Record<string, unknown> = {}
@@ -133,11 +131,12 @@ export async function updateStaff(id: string, values: {
 export async function deactivateStaff(id: string) {
   const supabase = await createClient()
 
-  // Only admin can deactivate admin-role staff
+  // Only admin can deactivate admin/principal-role staff
   const callerRole = await getUserRole()
   if (callerRole !== 'admin') {
     const { data: target } = await supabase.from('staff').select('role').eq('id', id).single()
-    if (target?.role === 'admin') return { error: 'Only an admin can deactivate an admin staff member' }
+    if (target?.role === 'admin' || target?.role === 'principal')
+      return { error: 'Only an admin can deactivate a ' + target!.role + ' staff member' }
   }
 
   const { error } = await supabase.from('staff').update({ status: 'removed' }).eq('id', id)
@@ -325,10 +324,23 @@ export async function rejectLeaveRequest(id: string) {
 }
 
 export async function createParent(values: { name: string; email: string; phone?: string }) {
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') return { error: 'Only an admin can add parent accounts' }
   const supabase = await createClient()
   const { data, error } = await supabase.from('parents').insert(values).select().single()
   if (error) return { error: error.message }
   await logAuditEvent('create', 'parents', data.id, values)
   revalidatePath('/admin/staff')
   return { data }
+}
+
+export async function deactivateParent(id: string) {
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') return { error: 'Only an admin can remove parent accounts' }
+  const supabase = await createClient()
+  const { error } = await supabase.from('parents').update({ status: 'removed' }).eq('id', id)
+  if (error) return { error: error.message }
+  await logAuditEvent('deactivate', 'parents', id)
+  revalidatePath('/admin/staff')
+  return {}
 }

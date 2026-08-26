@@ -8,7 +8,7 @@ export default async function StaffPage() {
   const profile = await getUserProfile()
   const [staff, parents, classes, subjects] = await Promise.all([
     sb.from('staff').select('*').order('name'),
-    sb.from('parents').select('*').order('name'),
+    sb.from('parents').select('*').eq('status', 'active').order('name'),
     sb.from('classes').select('*').order('name'),
     sb.from('subjects').select('*').order('name'),
   ])

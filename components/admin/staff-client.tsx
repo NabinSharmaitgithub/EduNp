@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { createStaff, updateStaff, deactivateStaff, createParent } from '@/app/admin/actions'
+import { createStaff, updateStaff, deactivateStaff, createParent, deactivateParent } from '@/app/admin/actions'
 import { Icon } from '@/components/icon'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, btnDanger, inputCls } from '@/components/ui'
@@ -21,6 +21,16 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
   const [parentModal, setParentModal] = useState(false)
   const [tempPwModal, setTempPwModal] = useState<string | null>(null)
 
+  const callerRole = profile?.role ?? null
+  const canManageStaff = callerRole === 'admin' || callerRole === 'principal'
+  const canManageParents = callerRole === 'admin'
+
+  function canEditStaffRow(targetRole: StaffRole) {
+    if (callerRole === 'admin') return true
+    if (callerRole === 'principal') return targetRole === 'teacher' || targetRole === 'helping_staff'
+    return false
+  }
+
   function run(fn: () => Promise<{ error?: string }>, okMsg: string) {
     startTransition(async () => {
       const res = await fn()
@@ -33,9 +43,11 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
     <div className="max-w-content mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-headline-lg">Staff & Parents</h1>
-        <button className={btnPrimary} onClick={() => tab === 'staff' ? setStaffModal({ open: true }) : setParentModal(true)}>
-          <Icon name="add" /> {tab === 'staff' ? 'Add Staff' : 'Add Parent'}
-        </button>
+        {((tab === 'staff' && canManageStaff) || (tab === 'parents' && canManageParents)) && (
+          <button className={btnPrimary} onClick={() => tab === 'staff' ? setStaffModal({ open: true }) : setParentModal(true)}>
+            <Icon name="add" /> {tab === 'staff' ? 'Add Staff' : 'Add Parent'}
+          </button>
+        )}
       </div>
       {error && <p className="mb-4 text-body-md text-on-error-container bg-error-container rounded-lg px-4 py-3">{error}</p>}
 
@@ -79,10 +91,12 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
                       <Link aria-label={`View ${s.name}`} href={`/admin/staff/${s.id}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full inline-flex">
                         <Icon name="visibility" />
                       </Link>
-                      <button aria-label={`Edit ${s.name}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full" onClick={() => setStaffModal({ open: true, edit: s })}>
-                        <Icon name="edit" />
-                      </button>
-                      {s.status === 'active' && (
+                      {canEditStaffRow(s.role as StaffRole) && (
+                        <button aria-label={`Edit ${s.name}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full" onClick={() => setStaffModal({ open: true, edit: s })}>
+                          <Icon name="edit" />
+                        </button>
+                      )}
+                      {s.status === 'active' && canEditStaffRow(s.role as StaffRole) && (
                         <button aria-label={`Deactivate ${s.name}`} className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deactivateStaff(s.id), 'Staff deactivated')}>
                           <Icon name="person_remove" />
                         </button>
@@ -103,6 +117,7 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
                   <th className="py-3 px-6 font-medium">Name</th>
                   <th className="py-3 px-6 font-medium">Email</th>
                   <th className="py-3 px-6 font-medium">Phone</th>
+                  {canManageParents && <th className="py-3 px-6 font-medium text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant">
@@ -111,6 +126,13 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
                     <td className="py-3 px-6 font-medium">{p.name}</td>
                     <td className="py-3 px-6 text-on-surface-variant">{p.email}</td>
                     <td className="py-3 px-6 text-on-surface-variant">{p.phone ?? '—'}</td>
+                    {canManageParents && (
+                      <td className="py-3 px-6 text-right">
+                        <button aria-label={`Remove ${p.name}`} className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deactivateParent(p.id), 'Parent removed')}>
+                          <Icon name="person_remove" />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
