@@ -39,7 +39,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right form panel */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-6 relative bg-surface">
+      <main className="w-full md:w-1/2 flex flex-col justify-center items-center p-6 relative bg-surface">
         <div className="md:hidden w-full text-center mb-8">
           <h1 className="text-headline-md text-primary flex items-center justify-center gap-2 mb-2 font-bold">
             🎓 EduAdmin
@@ -50,7 +50,7 @@ export default function LoginPage() {
         <div className="absolute bottom-6 text-body-sm text-outline">
           © 2026 EduAdmin. Student Management made simple.
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -53,7 +53,7 @@ export function TeacherAttendanceClient({ classes, students, attendance }: {
     <div className="max-w-content mx-auto w-full">
       <h1 className="text-headline-lg mb-6">Attendance</h1>
       <div className="flex flex-wrap gap-4 mb-6">
-        <select className={`${inputCls} sm:w-52`} value={classId} onChange={e => { setClassId(e.target.value); setRecords({}) }}>
+        <select aria-label="Filter by class" className={`${inputCls} sm:w-52`} value={classId} onChange={e => { setClassId(e.target.value); setRecords({}) }}>
           {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <input type="date" className={inputCls} value={date} onChange={e => { setDate(e.target.value); setRecords({}) }} />

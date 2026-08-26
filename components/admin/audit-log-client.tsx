@@ -22,11 +22,11 @@ export function AuditLogClient({ logs, staff, error }: { logs: AuditLogRow[]; st
       {error && <p className="mb-4 text-body-md text-on-error-container bg-error-container rounded-lg px-4 py-3">{error}</p>}
 
       <div className="flex gap-3 mb-6">
-        <select className={`${inputCls} sm:w-44`} value={tableFilter} onChange={e => setTableFilter(e.target.value)}>
+        <select aria-label="Filter by table" className={`${inputCls} sm:w-44`} value={tableFilter} onChange={e => setTableFilter(e.target.value)}>
           <option value="all">All Tables</option>
           {tables.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
-        <select className={`${inputCls} sm:w-44`} value={actionFilter} onChange={e => setActionFilter(e.target.value)}>
+        <select aria-label="Filter by action" className={`${inputCls} sm:w-44`} value={actionFilter} onChange={e => setActionFilter(e.target.value)}>
           <option value="all">All Actions</option>
           {actions.map(a => <option key={a} value={a}>{a}</option>)}
         </select>

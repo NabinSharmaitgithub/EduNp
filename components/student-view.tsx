@@ -183,7 +183,7 @@ function MarksTab({
       <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/50 shadow-bloom overflow-hidden">
         <div className="p-4 flex justify-between items-center border-b border-outline-variant/30">
           <h3 className="text-headline-sm font-bold">Recorded Marks</h3>
-          <select className={`${inputCls} w-44`} value={filterTerm} onChange={(e) => setFilterTerm(e.target.value)}>
+          <select aria-label="Filter by exam term" className={`${inputCls} w-44`} value={filterTerm} onChange={(e) => setFilterTerm(e.target.value)}>
             <option value="all">All Exam Terms</option>
             {terms.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -440,7 +440,7 @@ function ReportTab({
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between gap-3 no-print">
-        <select className={`${inputCls} sm:w-52`} value={termFilter} onChange={(e) => setTermFilter(e.target.value)}>
+        <select aria-label="Filter by exam term" className={`${inputCls} sm:w-52`} value={termFilter} onChange={(e) => setTermFilter(e.target.value)}>
           <option value="all">All Exam Terms</option>
           {terms.map((t) => (
             <option key={t} value={t}>{t}</option>

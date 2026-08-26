@@ -147,7 +147,7 @@ export function ReportClient({
             <p className="text-body-sm text-on-surface-variant mt-1">Performance summary across students</p>
           </div>
           <div className="flex flex-wrap gap-3 no-print">
-            <select className={`${inputCls} w-44`} value={termFilter} onChange={(e) => setTermFilter(e.target.value)}>
+            <select aria-label="Filter by exam term" className={`${inputCls} w-44`} value={termFilter} onChange={(e) => setTermFilter(e.target.value)}>
               <option value="all">Exam Term: All Terms</option>
               {terms.map((t) => (
                 <option key={t} value={t}>Exam Term: {t}</option>

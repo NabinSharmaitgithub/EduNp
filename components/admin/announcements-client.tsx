@@ -7,7 +7,7 @@ import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, inputCls } from '@/components/ui'
 import type { AnnouncementRow, ClassRow } from '@/lib/types'
 
-export function AnnouncementsClient({ announcements, classes, error }: { announcements: AnnouncementRow[]; classes: ClassRow[]; error?: string }) {
+export function AnnouncementsClient({ announcements, classes, readOnly, error }: { announcements: AnnouncementRow[]; classes: ClassRow[]; readOnly?: boolean; error?: string }) {
   const toast = useToast()
   const [pending, startTransition] = useTransition()
   const [addModal, setAddModal] = useState(false)
@@ -20,7 +20,7 @@ export function AnnouncementsClient({ announcements, classes, error }: { announc
     <div className="max-w-content mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-headline-lg">Announcements</h1>
-        <button className={btnPrimary} onClick={() => setAddModal(true)}><Icon name="add" /> New Announcement</button>
+        {!readOnly && <button className={btnPrimary} onClick={() => setAddModal(true)}><Icon name="add" /> New Announcement</button>}
       </div>
       {error && <p className="mb-4 text-body-md text-on-error-container bg-error-container rounded-lg px-4 py-3">{error}</p>}
 
@@ -41,9 +41,11 @@ export function AnnouncementsClient({ announcements, classes, error }: { announc
                   <p className="text-body-md text-on-surface-variant whitespace-pre-wrap">{a.body}</p>
                   <p className="text-body-sm text-on-surface-variant/70 mt-3">{new Date(a.created_at).toLocaleString()}</p>
                 </div>
-                <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteAnnouncement(a.id), 'Deleted')}>
-                  <Icon name="delete" />
-                </button>
+                {!readOnly && (
+                  <button aria-label="Delete announcement" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteAnnouncement(a.id), 'Deleted')}>
+                    <Icon name="delete" />
+                  </button>
+                )}
               </div>
             </div>
           ))}

@@ -49,7 +49,7 @@ export default function SetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-surface-container-lowest rounded-xl p-6 shadow-bloom border border-outline-variant/50">
         <div className="mb-6 text-center">
           <div className="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant text-2xl mx-auto mb-4">
@@ -89,6 +89,6 @@ export default function SetPasswordPage() {
           </button>
         </form>
       </div>
-    </div>
+    </main>
   )
 }

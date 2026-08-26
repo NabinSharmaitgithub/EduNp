@@ -34,7 +34,7 @@ export interface ExamDutyRow { id: string; exam_id: string; teacher_id: string; 
 export interface LeaveRequestRow { id: string; staff_id: string; start_date: string; end_date: string; reason: string; status: 'pending' | 'approved' | 'rejected'; created_at: string }
 export interface AuditLogRow { id: string; actor_id: string | null; action: string; target_table: string; target_id: string | null; timestamp: string; details: Record<string, unknown> | null }
 
-export type UserRole = 'principal' | 'admin' | 'teacher' | 'parent'
+export type UserRole = 'principal' | 'admin' | 'teacher' | 'helping_staff' | 'parent'
 export interface UserProfile { role: UserRole; staffId?: string; parentId?: string; name: string; email: string }
 
 export const EXAM_TERMS = ['Midterm', 'Final', 'Quiz 1', 'Quiz 2', 'Assignment 1', 'Assignment 2'] as const

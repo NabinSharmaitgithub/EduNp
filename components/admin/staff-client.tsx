@@ -6,14 +6,14 @@ import { createStaff, updateStaff, deactivateStaff, createParent } from '@/app/a
 import { Icon } from '@/components/icon'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, btnDanger, inputCls } from '@/components/ui'
-import type { StaffRow, ParentRow, ClassRow, SubjectRow, StaffRole } from '@/lib/types'
+import type { StaffRow, ParentRow, ClassRow, SubjectRow, StaffRole, UserProfile } from '@/lib/types'
 
 type StaffClientProps = {
   staff: StaffRow[]; parents: ParentRow[]; classes: ClassRow[]; subjects: SubjectRow[]
-  error?: string
+  profile: UserProfile | null; error?: string
 }
 
-export function StaffClient({ staff, parents, classes, subjects, error }: StaffClientProps) {
+export function StaffClient({ staff, parents, classes, subjects, profile, error }: StaffClientProps) {
   const toast = useToast()
   const [pending, startTransition] = useTransition()
   const [tab, setTab] = useState<'staff' | 'parents'>('staff')
@@ -76,14 +76,14 @@ export function StaffClient({ staff, parents, classes, subjects, error }: StaffC
                       </span>
                     </td>
                     <td className="py-3 px-6 text-right space-x-2">
-                      <Link href={`/admin/staff/${s.id}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full inline-flex">
+                      <Link aria-label={`View ${s.name}`} href={`/admin/staff/${s.id}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full inline-flex">
                         <Icon name="visibility" />
                       </Link>
-                      <button className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full" onClick={() => setStaffModal({ open: true, edit: s })}>
+                      <button aria-label={`Edit ${s.name}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full" onClick={() => setStaffModal({ open: true, edit: s })}>
                         <Icon name="edit" />
                       </button>
                       {s.status === 'active' && (
-                        <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deactivateStaff(s.id), 'Staff deactivated')}>
+                        <button aria-label={`Deactivate ${s.name}`} className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deactivateStaff(s.id), 'Staff deactivated')}>
                           <Icon name="person_remove" />
                         </button>
                       )}
@@ -119,7 +119,7 @@ export function StaffClient({ staff, parents, classes, subjects, error }: StaffC
         )
       )}
 
-      <StaffModal open={staffModal.open} edit={staffModal.edit} classes={classes} subjects={subjects} onClose={() => setStaffModal({ open: false })} onSubmit={(v) => {
+      <StaffModal open={staffModal.open} edit={staffModal.edit} classes={classes} subjects={subjects} callerRole={profile?.role ?? null} onClose={() => setStaffModal({ open: false })} onSubmit={(v) => {
         startTransition(async () => {
           if (staffModal.edit) {
             const res = await updateStaff(staffModal.edit!.id, v as any)
@@ -174,10 +174,11 @@ export function StaffClient({ staff, parents, classes, subjects, error }: StaffC
 
 type StaffModalProps = {
   open: boolean; edit?: StaffRow; classes: ClassRow[]; subjects: SubjectRow[]
+  callerRole: UserProfile['role'] | null
   onClose: () => void; onSubmit: (v: Record<string, unknown>) => void
 }
 
-function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: StaffModalProps) {
+function StaffModal({ open, edit, classes, subjects, callerRole, onClose, onSubmit }: StaffModalProps) {
   const isEdit = !!edit
   const [name, setName] = useState(edit?.name ?? '')
   const [email, setEmail] = useState(edit?.email ?? '')
@@ -237,9 +238,9 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: StaffM
         <Field label="Role">
           <select className={inputCls} value={role} onChange={e => setRole(e.target.value as StaffRole)} disabled={isEdit}>
             <option value="teacher">Teacher</option>
-            <option value="admin">Admin</option>
-            <option value="principal">Principal</option>
             <option value="helping_staff">Helping Staff</option>
+            {callerRole === 'admin' && <option value="admin">Admin</option>}
+            {callerRole === 'admin' && <option value="principal">Principal</option>}
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
@@ -296,7 +297,7 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: StaffM
               {subjectRows.map((row, i) => (
                 <div key={i} className="flex gap-2 mb-2 items-end">
                   <div className="flex-1">
-                    <select className={inputCls} value={row.subject_id} onChange={e => {
+                    <select aria-label={`Subject assignment ${i + 1}`} className={inputCls} value={row.subject_id} onChange={e => {
                       const copy = [...subjectRows]; copy[i] = { ...copy[i], subject_id: e.target.value }; setSubjectRows(copy)
                     }}>
                       <option value="">Subject…</option>
@@ -304,14 +305,14 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: StaffM
                     </select>
                   </div>
                   <div className="flex-1">
-                    <select className={inputCls} value={row.class_id} onChange={e => {
+                    <select aria-label={`Class assignment ${i + 1}`} className={inputCls} value={row.class_id} onChange={e => {
                       const copy = [...subjectRows]; copy[i] = { ...copy[i], class_id: e.target.value }; setSubjectRows(copy)
                     }}>
                       <option value="">Class…</option>
                       {classes.map(c => <option key={c.id} value={c.id}>{c.name}{c.section ? ' — ' + c.section : ''}</option>)}
                     </select>
                   </div>
-                  <button type="button" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full shrink-0 mb-0.5"
+                  <button type="button" aria-label="Remove subject assignment" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full shrink-0 mb-0.5"
                     onClick={() => setSubjectRows(subjectRows.filter((_, j) => j !== i))}>
                     <Icon name="close" />
                   </button>

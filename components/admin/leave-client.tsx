@@ -25,7 +25,7 @@ export function LeaveAdminClient({ leave, staff, error }: { leave: LeaveRequestR
       <h1 className="text-headline-lg mb-6">Leave Requests</h1>
       {error && <p className="mb-4 text-body-md text-on-error-container bg-error-container rounded-lg px-4 py-3">{error}</p>}
 
-      <select className={`${inputCls} mb-6 sm:w-44`} value={filter} onChange={e => setFilter(e.target.value)}>
+      <select aria-label="Filter by status" className={`${inputCls} mb-6 sm:w-44`} value={filter} onChange={e => setFilter(e.target.value)}>
         <option value="all">All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
       </select>
 

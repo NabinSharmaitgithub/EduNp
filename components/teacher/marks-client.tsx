@@ -52,13 +52,13 @@ export function TeacherMarksClient({ classes, students, marks, subjects }: {
     <div className="max-w-content mx-auto w-full">
       <h1 className="text-headline-lg mb-6">Enter Marks</h1>
       <div className="flex flex-wrap gap-4 mb-6">
-        <select className={`${inputCls} sm:w-44`} value={classId} onChange={e => setClassId(e.target.value)}>
+        <select aria-label="Filter by class" className={`${inputCls} sm:w-44`} value={classId} onChange={e => setClassId(e.target.value)}>
           {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <select className={`${inputCls} sm:w-44`} value={subjectId} onChange={e => setSubjectId(e.target.value)}>
+        <select aria-label="Filter by subject" className={`${inputCls} sm:w-44`} value={subjectId} onChange={e => setSubjectId(e.target.value)}>
           {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
-        <select className={`${inputCls} sm:w-44`} value={term} onChange={e => setTerm(e.target.value)}>
+        <select aria-label="Filter by exam term" className={`${inputCls} sm:w-44`} value={term} onChange={e => setTerm(e.target.value)}>
           {EXAM_TERMS.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
       </div>

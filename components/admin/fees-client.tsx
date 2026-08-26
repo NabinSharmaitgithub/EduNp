@@ -46,7 +46,7 @@ export function FeesClient({ fees, students, classes, error }: { fees: FeeRow[];
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/50"><span className="text-body-sm text-on-surface-variant">Overdue</span><p className="text-headline-sm font-bold text-red-600">{summary.overdue}</p></div>
       </div>
 
-      <select className={`${inputCls} mb-6 sm:w-44`} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+      <select aria-label="Filter by status" className={`${inputCls} mb-6 sm:w-44`} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
         <option value="all">All Status</option>
         <option value="paid">Paid</option><option value="due">Due</option><option value="overdue">Overdue</option>
       </select>

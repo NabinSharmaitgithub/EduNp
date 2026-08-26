@@ -49,7 +49,7 @@ export function AssignmentsClient({ teachers, classes, subjects, classAssignment
                   <p className="font-semibold">{className(a.class_id)}</p>
                   <p className="text-body-sm text-on-surface-variant">{teacherName(a.teacher_id)}</p>
                 </div>
-                <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => removeClassTeacher(a.class_id), 'Removed')}>
+                <button aria-label="Remove class teacher" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => removeClassTeacher(a.class_id), 'Removed')}>
                   <Icon name="close" />
                 </button>
               </div>
@@ -85,7 +85,7 @@ export function AssignmentsClient({ teachers, classes, subjects, classAssignment
                     <td className="py-3 px-6">{subjectName(a.subject_id)}</td>
                     <td className="py-3 px-6">{className(a.class_id)}</td>
                     <td className="py-3 px-6 text-right">
-                      <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => removeSubjectTeacher(a.id), 'Removed')}>
+                      <button aria-label="Remove subject teacher" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => removeSubjectTeacher(a.id), 'Removed')}>
                         <Icon name="close" />
                       </button>
                     </td>

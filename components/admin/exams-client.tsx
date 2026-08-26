@@ -46,7 +46,7 @@ export function ExamsClient({ exams, duties, teachers, classes, error }: {
                   </div>
                   <div className="flex gap-2">
                     <button className={btnOutline} onClick={() => setDutyModal(ex)}>Duties ({exDuties.length})</button>
-                    <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteExam(ex.id), 'Exam deleted')}><Icon name="delete" /></button>
+                    <button aria-label="Delete exam" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteExam(ex.id), 'Exam deleted')}><Icon name="delete" /></button>
                   </div>
                 </div>
                 {exDuties.length > 0 && (

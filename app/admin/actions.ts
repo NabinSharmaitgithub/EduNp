@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient, generateTempPassword } from '@/lib/supabase/admin'
-import { logAuditEvent, getCurrentStaffId } from '@/lib/role'
+import { logAuditEvent, getCurrentStaffId, getUserRole } from '@/lib/role'
 import type { StaffRole } from '@/lib/types'
 
 const VALID_ROLES: StaffRole[] = ['teacher', 'admin', 'principal', 'helping_staff']
@@ -30,6 +30,13 @@ export async function createStaff(input: CreateStaffInput) {
   if (!VALID_ROLES.includes(input.role)) errs.push('Invalid role')
   if (input.contact_number && !/^\d{7,15}$/.test(input.contact_number)) errs.push('Contact number must be 7-15 digits')
   if (input.emergency_contact_number && !/^\d{7,15}$/.test(input.emergency_contact_number)) errs.push('Emergency contact must be 7-15 digits')
+
+  // Only admin can create admin-role staff
+  if (input.role === 'admin') {
+    const callerRole = await getUserRole()
+    if (callerRole !== 'admin') errs.push('Only an admin can create staff with the admin role')
+  }
+
   if (errs.length) return { error: errs.join('; ') }
 
   // Check email uniqueness in staff
@@ -101,6 +108,18 @@ export async function updateStaff(id: string, values: {
   if (values.emergency_contact_number && !/^\d{7,15}$/.test(values.emergency_contact_number)) return { error: 'Emergency contact must be 7-15 digits' }
   if (values.email && !emailRe.test(values.email)) return { error: 'Invalid email format' }
 
+  // Only admin can change role to/from admin
+  if (values.role === 'admin' || values.role === undefined) {
+    // If role is being set to admin, or if we're updating other fields on an admin row
+    const callerRole = await getUserRole()
+    if (callerRole !== 'admin') {
+      if (values.role === 'admin') return { error: 'Only an admin can change a staff member\'s role to admin' }
+      // Check if target is currently admin — principal can't edit admin rows
+      const { data: target } = await supabase.from('staff').select('role').eq('id', id).single()
+      if (target?.role === 'admin') return { error: 'Only an admin can modify an admin staff member' }
+    }
+  }
+
   const clean: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(values)) { if (v !== undefined) clean[k] = v || null }
 
@@ -113,6 +132,14 @@ export async function updateStaff(id: string, values: {
 
 export async function deactivateStaff(id: string) {
   const supabase = await createClient()
+
+  // Only admin can deactivate admin-role staff
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') {
+    const { data: target } = await supabase.from('staff').select('role').eq('id', id).single()
+    if (target?.role === 'admin') return { error: 'Only an admin can deactivate an admin staff member' }
+  }
+
   const { error } = await supabase.from('staff').update({ status: 'removed' }).eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('deactivate', 'staff', id)

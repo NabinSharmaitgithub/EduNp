@@ -8,8 +8,8 @@ import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, inputCls } f
 import { DAYS_OF_WEEK } from '@/lib/types'
 import type { ClassRow, SubjectRow, StaffRow, TimetableRow } from '@/lib/types'
 
-export function TimetableClient({ timetable, classes, subjects, teachers, error }: {
-  timetable: TimetableRow[]; classes: ClassRow[]; subjects: SubjectRow[]; teachers: StaffRow[]; error?: string
+export function TimetableClient({ timetable, classes, subjects, teachers, readOnly, error }: {
+  timetable: TimetableRow[]; classes: ClassRow[]; subjects: SubjectRow[]; teachers: StaffRow[]; readOnly?: boolean; error?: string
 }) {
   const toast = useToast()
   const [pending, startTransition] = useTransition()
@@ -38,10 +38,10 @@ export function TimetableClient({ timetable, classes, subjects, teachers, error 
     <div className="max-w-content mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-headline-lg">Timetable</h1>
-        <button className={btnPrimary} onClick={() => setAddModal(true)}><Icon name="add" /> Add Entry</button>
+        {!readOnly && <button className={btnPrimary} onClick={() => setAddModal(true)}><Icon name="add" /> Add Entry</button>}
       </div>
       {error && <p className="mb-4 text-body-md text-on-error-container bg-error-container rounded-lg px-4 py-3">{error}</p>}
-      <select className={`${inputCls} mb-6 sm:w-52`} value={classFilter} onChange={e => setClassFilter(e.target.value)}>
+      <select aria-label="Filter by class" className={`${inputCls} mb-6 sm:w-52`} value={classFilter} onChange={e => setClassFilter(e.target.value)}>
         <option value="all">All Classes</option>
         {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
       </select>
@@ -64,9 +64,11 @@ export function TimetableClient({ timetable, classes, subjects, teachers, error 
                       <p className="text-body-sm text-on-surface-variant">{nameMap.teacher[e.teacher_id] ?? '—'}</p>
                       <p className="text-body-sm text-on-surface-variant">{e.start_time} – {e.end_time}</p>
                     </div>
-                    <button className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteTimetableEntry(e.id), 'Deleted')}>
-                      <Icon name="delete" />
-                    </button>
+                    {!readOnly && (
+                      <button aria-label="Delete timetable entry" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full" onClick={() => run(() => deleteTimetableEntry(e.id), 'Deleted')}>
+                        <Icon name="delete" />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { barColor, gradeOf, initials } from "@/lib/types";
 
 export const inputCls =
@@ -23,10 +24,11 @@ export function Field({
   error?: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-label-md text-on-surface">{label}</label>
-      {children}
+      <label htmlFor={id} className="text-label-md text-on-surface">{label}</label>
+      <div id={id}>{children}</div>
       {error && <p className="text-body-sm text-error">{error}</p>}
     </div>
   );

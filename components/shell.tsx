@@ -13,9 +13,9 @@ const NAV: { label: string; href: string; icon: string; roles: UserProfile['role
   { label: 'Staff', href: '/admin/staff', icon: 'people', roles: ['principal', 'admin'] },
   { label: 'Assignments', href: '/admin/assignments', icon: 'assignment_ind', roles: ['principal', 'admin'] },
   { label: 'Attendance', href: '/admin/attendance', icon: 'event_available', roles: ['principal', 'admin'] },
-  { label: 'Timetable', href: '/admin/timetable', icon: 'schedule', roles: ['principal', 'admin'] },
+  { label: 'Timetable', href: '/admin/timetable', icon: 'schedule', roles: ['principal', 'admin', 'helping_staff'] },
   { label: 'Fees', href: '/admin/fees', icon: 'payments', roles: ['principal', 'admin'] },
-  { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', roles: ['principal', 'admin'] },
+  { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', roles: ['principal', 'admin', 'helping_staff'] },
   { label: 'Exams', href: '/admin/exams', icon: 'quiz', roles: ['principal', 'admin'] },
   { label: 'Leave', href: '/admin/leave', icon: 'event_busy', roles: ['principal', 'admin'] },
   { label: 'Audit Log', href: '/admin/audit-log', icon: 'history', roles: ['principal', 'admin'] },
@@ -78,7 +78,7 @@ export default function Shell({ user, profile, children }: { user: { email: stri
       )}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-14 bg-white border-b flex items-center px-4 lg:px-6 shrink-0">
-          <button className="lg:hidden mr-3 p-1" onClick={() => setMobileOpen(true)}><Icon name="menu" className="text-xl" /></button>
+          <button aria-label="Open navigation menu" className="lg:hidden mr-3 p-1" onClick={() => setMobileOpen(true)}><Icon name="menu" className="text-xl" /></button>
           <div className="flex-1" />
           <span className="text-sm text-gray-600 hidden sm:block">{user.email}</span>
         </header>

@@ -52,6 +52,14 @@ export async function getCurrentStaffId(): Promise<string | null> {
   return data?.id ?? null
 }
 
+export async function getUserRole(): Promise<string | null> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data } = await supabase.from('staff').select('role').eq('user_id', user.id).eq('status', 'active').single()
+  return data?.role ?? null
+}
+
 export async function logAuditEvent(action: string, targetTable: string, targetId?: string, details?: Record<string, unknown>) {
   const supabase = await createClient()
   const actorId = await getCurrentStaffId()

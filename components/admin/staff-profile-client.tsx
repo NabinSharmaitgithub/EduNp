@@ -51,7 +51,7 @@ export function StaffProfileClient({ staff, classes, subjects, classAssign, subj
     <div className="max-w-content mx-auto w-full space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/admin/staff" className="text-on-surface-variant hover:text-primary">
+        <Link aria-label="Back to staff list" href="/admin/staff" className="text-on-surface-variant hover:text-primary">
           <Icon name="arrow_back" />
         </Link>
         <Avatar name={staff.name} size="lg" />
@@ -180,7 +180,7 @@ function AssignmentEditModal({ open, onClose, classes, subjects, currentClassTea
           {rows.map((row, i) => (
             <div key={i} className="flex gap-2 mb-2 items-end">
               <div className="flex-1">
-                <select className={inputCls} value={row.subject_id} onChange={e => {
+                <select aria-label={`Subject assignment ${i + 1}`} className={inputCls} value={row.subject_id} onChange={e => {
                   const copy = [...rows]; copy[i] = { ...copy[i], subject_id: e.target.value }; setRows(copy)
                 }}>
                   <option value="">Subject…</option>
@@ -188,14 +188,14 @@ function AssignmentEditModal({ open, onClose, classes, subjects, currentClassTea
                 </select>
               </div>
               <div className="flex-1">
-                <select className={inputCls} value={row.class_id} onChange={e => {
+                <select aria-label={`Class assignment ${i + 1}`} className={inputCls} value={row.class_id} onChange={e => {
                   const copy = [...rows]; copy[i] = { ...copy[i], class_id: e.target.value }; setRows(copy)
                 }}>
                   <option value="">Class…</option>
                   {classes.map(c => <option key={c.id} value={c.id}>{c.name}{c.section ? ' — ' + c.section : ''}</option>)}
                 </select>
               </div>
-              <button type="button" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full shrink-0 mb-0.5"
+              <button type="button" aria-label="Remove assignment" className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full shrink-0 mb-0.5"
                 onClick={() => setRows(rows.filter((_, j) => j !== i))}>
                 <Icon name="close" />
               </button>

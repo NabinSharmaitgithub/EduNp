@@ -107,7 +107,7 @@ export function ClassView({
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <select className={`${inputCls} sm:w-44`} value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}>
+          <select aria-label="Sort order" className={`${inputCls} sm:w-44`} value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}>
             <option value="roll">Sort by Roll No</option>
             <option value="name">Sort by Name</option>
             <option value="avg">Sort by Average</option>
