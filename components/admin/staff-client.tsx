@@ -147,15 +147,20 @@ export function StaffClient({ staff, parents, classes, subjects, profile, error 
             const res = await updateStaff(staffModal.edit!.id, v as any)
             if (res.error) toast('error', res.error)
             else toast('success', 'Staff updated')
+            setStaffModal({ open: false })
           } else {
             const res = await createStaff(v as any)
-            if (res.error) toast('error', res.error)
-            else {
-              toast('success', 'Staff created')
-              setTempPwModal(res.tempPassword!)
+            if (res.error) {
+              toast('error', res.error)
+              setStaffModal({ open: false })
+            } else if (res.temporaryPassword) {
+              setStaffModal({ open: false })
+              setTempPwModal(res.temporaryPassword)
+            } else {
+              toast('error', 'Staff created but password could not be generated. Ask the user to reset their password.')
+              setStaffModal({ open: false })
             }
           }
-          setStaffModal({ open: false })
         })
       }} />
 

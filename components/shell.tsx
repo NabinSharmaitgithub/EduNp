@@ -8,9 +8,11 @@ import { Icon } from './icon'
 import type { UserProfile } from '@/lib/types'
 
 const NAV: { label: string; href: string; icon: string; roles: UserProfile['role'][] }[] = [
-  { label: 'Analytics', href: '/admin', icon: 'analytics', roles: ['principal', 'admin'] },
+  { label: 'Dashboard', href: '/admin', icon: 'dashboard', roles: ['principal', 'admin'] },
+  { label: 'Admins', href: '/admin/admins', icon: 'shield', roles: ['admin'] },
   { label: 'Classes', href: '/classes', icon: 'school', roles: ['principal', 'admin', 'teacher'] },
   { label: 'Staff', href: '/admin/staff', icon: 'people', roles: ['principal', 'admin'] },
+  { label: 'Directory', href: '/admin/directory', icon: 'badge', roles: ['admin'] },
   { label: 'Assignments', href: '/admin/assignments', icon: 'assignment_ind', roles: ['principal', 'admin'] },
   { label: 'Attendance', href: '/admin/attendance', icon: 'event_available', roles: ['principal', 'admin'] },
   { label: 'Timetable', href: '/admin/timetable', icon: 'schedule', roles: ['principal', 'admin', 'helping_staff'] },
@@ -18,8 +20,10 @@ const NAV: { label: string; href: string; icon: string; roles: UserProfile['role
   { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', roles: ['principal', 'admin', 'helping_staff'] },
   { label: 'Exams', href: '/admin/exams', icon: 'quiz', roles: ['principal', 'admin'] },
   { label: 'Leave', href: '/admin/leave', icon: 'event_busy', roles: ['principal', 'admin'] },
+  { label: 'Permissions', href: '/admin/permissions', icon: 'lock', roles: ['admin'] },
   { label: 'Audit Log', href: '/admin/audit-log', icon: 'history', roles: ['principal', 'admin'] },
   { label: 'Import', href: '/admin/import', icon: 'upload_file', roles: ['principal', 'admin'] },
+  { label: 'Settings', href: '/admin/settings', icon: 'settings', roles: ['admin'] },
   { label: 'Dashboard', href: '/dashboard', icon: 'dashboard', roles: ['teacher'] },
   { label: 'Attendance', href: '/teacher/attendance', icon: 'event_available', roles: ['teacher'] },
   { label: 'Marks', href: '/teacher/marks', icon: 'grade', roles: ['teacher'] },
@@ -36,13 +40,17 @@ export default function Shell({ user, profile, children }: { user: { email: stri
 
   const active = (href: string) => href === '/admin' || href === '/parent' ? pathname === href : pathname === href || pathname.startsWith(href + '/')
 
+  const pageTitle = nav.find(i => active(i.href))?.label ?? 'Dashboard'
+
   const logout = async () => { await createClient().auth.signOut(); router.push('/login') }
 
   const Side = () => (
     <>
       <div className="px-6 py-5 border-b border-white/10">
         <h1 className="text-xl font-bold">EduSchool</h1>
-        <p className="text-xs text-blue-300 mt-1 capitalize">{profile.role}</p>
+        <span className={`inline-block mt-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+          profile.role === 'admin' ? 'bg-amber-400 text-amber-950' : 'bg-blue-300/20 text-blue-200'
+        }`}>{profile.role}</span>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {nav.map(i => (
@@ -77,10 +85,13 @@ export default function Shell({ user, profile, children }: { user: { email: stri
         </div>
       )}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-14 bg-white border-b flex items-center px-4 lg:px-6 shrink-0">
-          <button aria-label="Open navigation menu" className="lg:hidden mr-3 p-1" onClick={() => setMobileOpen(true)}><Icon name="menu" className="text-xl" /></button>
+        <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 lg:px-6 shrink-0 z-30">
+          <button aria-label="Open navigation menu" className="lg:hidden mr-3 p-1 -ml-1" onClick={() => setMobileOpen(true)}><Icon name="menu" className="text-xl" /></button>
+          <h2 className="text-lg font-semibold text-gray-900 truncate">{pageTitle}</h2>
           <div className="flex-1" />
-          <span className="text-sm text-gray-600 hidden sm:block">{user.email}</span>
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+            {profile.name.charAt(0).toUpperCase()}
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">{children}</main>
       </div>

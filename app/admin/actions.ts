@@ -23,7 +23,6 @@ export async function createStaff(input: CreateStaffInput) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  // Validate
   const errs: string[] = []
   if (!input.name.trim()) errs.push('Name is required')
   if (!input.email.trim() || !emailRe.test(input.email)) errs.push('Valid email is required')
@@ -31,7 +30,6 @@ export async function createStaff(input: CreateStaffInput) {
   if (input.contact_number && !/^\d{7,15}$/.test(input.contact_number)) errs.push('Contact number must be 7-15 digits')
   if (input.emergency_contact_number && !/^\d{7,15}$/.test(input.emergency_contact_number)) errs.push('Emergency contact must be 7-15 digits')
 
-  // Only admin can create admin/principal-role staff
   if (input.role === 'admin' || input.role === 'principal') {
     const callerRole = await getUserRole()
     if (callerRole !== 'admin') errs.push('Only an admin can create staff with the ' + input.role + ' role')
@@ -39,27 +37,55 @@ export async function createStaff(input: CreateStaffInput) {
 
   if (errs.length) return { error: errs.join('; ') }
 
-  // Check email uniqueness in staff
-  const { data: existing } = await supabase.from('staff').select('id').eq('email', input.email.trim()).limit(1)
-  if (existing && existing.length > 0) return { error: 'A staff member with this email already exists' }
+  const email = input.email.trim().toLowerCase()
 
-  // Create Supabase Auth user
-  const tempPassword = generateTempPassword(12)
+  // 1) Check staff table for duplicate email
+  const { data: existingStaff } = await supabase.from('staff').select('id, status').eq('email', email).limit(1)
+  if (existingStaff && existingStaff.length > 0) {
+    return { error: existingStaff[0].status === 'removed'
+      ? 'A deactivated staff member with this email exists. Reactivate them instead.'
+      : 'Staff with this email already exists.' }
+  }
+
   const admin = createAdminClient()
-  const { data: authUser, error: authErr } = await admin.auth.admin.createUser({
-    email: input.email.trim(),
-    password: tempPassword,
-    email_confirm: true,
-  })
-  if (authErr) return { error: `Auth user creation failed: ${authErr.message}` }
+  const tempPassword = generateTempPassword(12)
+  let authUserId: string | null = null
+  let authUserWasOurs = false
 
-  // Insert staff row
+  // 2) Check if an auth user already exists for this email (orphaned from a prior failed attempt)
+  const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  const listRes = await fetch(`${baseUrl}/auth/v1/admin/users?email=${encodeURIComponent(email)}&page=1&per_page=1`, {
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+  })
+  const listData = await listRes.json()
+  const existingAuthUser = listData?.users?.[0]
+
+  if (existingAuthUser) {
+    // Auth user exists but no staff row → orphan. Reuse it.
+    authUserId = existingAuthUser.id
+    authUserWasOurs = false
+  } else {
+    // Create fresh auth user
+    const { data: authUser, error: authErr } = await admin.auth.admin.createUser({
+      email,
+      password: tempPassword,
+      email_confirm: true,
+    })
+    if (authErr) return { error: authErr.message.includes('already been registered')
+      ? 'An account with this email already exists in the system.'
+      : `Could not create login account: ${authErr.message}` }
+    authUserId = authUser!.user.id
+    authUserWasOurs = true
+  }
+
+  // 3) Insert staff row — rollback auth user on failure
   const staffRow: Record<string, unknown> = {
     name: input.name.trim(),
-    email: input.email.trim(),
+    email,
     role: input.role,
     status: 'active',
-    user_id: authUser.user.id,
+    user_id: authUserId,
     must_change_password: true,
     date_of_birth: input.date_of_birth || null,
     gender: input.gender || null,
@@ -74,12 +100,16 @@ export async function createStaff(input: CreateStaffInput) {
 
   const { data: staff, error: staffErr } = await supabase.from('staff').insert(staffRow).select().single()
   if (staffErr) {
-    // Rollback: delete the auth user we just created
-    await admin.auth.admin.deleteUser(authUser.user.id)
-    return { error: staffErr.message }
+    // Rollback: delete only the auth user we just created, not orphaned ones
+    if (authUserWasOurs && authUserId) {
+      await admin.auth.admin.deleteUser(authUserId)
+    }
+    return { error: staffErr.message.includes('duplicate')
+      ? 'Staff with this email already exists.'
+      : `Could not create staff record: ${staffErr.message}` }
   }
 
-  // If teacher, assign class teacher + subjects
+  // 4) Assignments for teachers
   if (input.role === 'teacher') {
     if (input.teacher_class_id) {
       await supabase.from('teacher_class_assignments').upsert({ teacher_id: staff.id, class_id: input.teacher_class_id })
@@ -93,7 +123,7 @@ export async function createStaff(input: CreateStaffInput) {
   await logAuditEvent('create', 'staff', staff.id, { name: staff.name, email: staff.email, role: staff.role })
   revalidatePath('/admin/staff')
   revalidatePath('/admin/assignments')
-  return { data: staff, tempPassword }
+  return { data: staff, temporaryPassword: tempPassword }
 }
 
 export async function updateStaff(id: string, values: {
@@ -342,5 +372,29 @@ export async function deactivateParent(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('deactivate', 'parents', id)
   revalidatePath('/admin/staff')
+  return {}
+}
+
+export async function createSubject(name: string) {
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') return { error: 'Only an admin can manage subjects' }
+  const supabase = await createClient()
+  const trimmed = name.trim()
+  if (!trimmed) return { error: 'Subject name is required' }
+  const { data, error } = await supabase.from('subjects').insert({ name: trimmed }).select().single()
+  if (error) return { error: error.message.includes('duplicate') ? 'Subject already exists' : error.message }
+  await logAuditEvent('create', 'subjects', data.id, { name: trimmed })
+  revalidatePath('/admin/settings')
+  return { data }
+}
+
+export async function deleteSubject(id: string) {
+  const callerRole = await getUserRole()
+  if (callerRole !== 'admin') return { error: 'Only an admin can manage subjects' }
+  const supabase = await createClient()
+  const { error } = await supabase.from('subjects').delete().eq('id', id)
+  if (error) return { error: error.message }
+  await logAuditEvent('delete', 'subjects', id)
+  revalidatePath('/admin/settings')
   return {}
 }

@@ -115,5 +115,26 @@ export function EmptyState({ icon, title, hint }: { icon: string; title: string;
       <p className="text-title-lg">{title}</p>
       {hint && <p className="text-body-md text-on-surface-variant max-w-xs">{hint}</p>}
     </div>
-  );
+  )
+}
+
+export function ConfirmDialog({
+  open, onClose, onConfirm, title, message, confirmLabel = 'Confirm', danger,
+}: {
+  open: boolean; onClose: () => void; onConfirm: () => void; title: string; message: string
+  confirmLabel?: string; danger?: boolean
+}) {
+  if (!open) return null
+  return (
+    <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-surface-container-lowest w-full max-w-sm rounded-xl shadow-xl border border-outline-variant/50 p-6" onClick={e => e.stopPropagation()}>
+        <h3 className="text-title-lg font-semibold mb-2">{title}</h3>
+        <p className="text-body-md text-on-surface-variant mb-6">{message}</p>
+        <div className="flex justify-end gap-2">
+          <button className={btnOutline} onClick={onClose}>Cancel</button>
+          <button className={danger ? btnDanger : btnPrimary} onClick={onConfirm}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
+  )
 }
