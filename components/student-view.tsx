@@ -24,11 +24,13 @@ export function StudentView({
   cls,
   marks: initialMarks,
   subjects,
+  homeHref = '/admin',
 }: {
   student: StudentRow;
   cls: ClassRow | null;
   marks: MarkRow[];
   subjects: SubjectRow[];
+  homeHref?: string;
 }) {
   const toast = useToast();
   const [pending, startTransition] = useTransition();
@@ -67,7 +69,7 @@ export function StudentView({
     <>
       <header className="h-16 px-6 bg-surface flex items-center sticky top-0 z-40 border-b border-outline-variant/30">
         <nav className="flex items-center gap-2 text-body-sm text-on-surface-variant flex-wrap">
-          <Link href="/admin" className="hover:text-primary">Dashboard</Link>
+          <Link href={homeHref} className="hover:text-primary">Dashboard</Link>
           {cls && (
             <>
               <span>/</span>

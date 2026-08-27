@@ -11,9 +11,11 @@ import type { StaffRow, ClassRow, SubjectRow, TeacherClassAssignment, TeacherSub
 type Props = {
   staff: StaffRow; classes: ClassRow[]; subjects: SubjectRow[]
   classAssign: TeacherClassAssignment[] | null; subjectAssign: TeacherSubjectAssignment[] | null
+  readOnly?: boolean
+  backHref?: string
 }
 
-export function StaffProfileClient({ staff, classes, subjects, classAssign, subjectAssign }: Props) {
+export function StaffProfileClient({ staff, classes, subjects, classAssign, subjectAssign, readOnly = false, backHref = '/admin/staff' }: Props) {
   const toast = useToast()
   const [pending, startTransition] = useTransition()
   const [editModal, setEditModal] = useState(false)
@@ -51,7 +53,7 @@ export function StaffProfileClient({ staff, classes, subjects, classAssign, subj
     <div className="max-w-content mx-auto w-full space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link aria-label="Back to staff list" href="/admin/staff" className="text-on-surface-variant hover:text-primary">
+        <Link aria-label="Back to staff list" href={backHref} className="text-on-surface-variant hover:text-primary">
           <Icon name="arrow_back" />
         </Link>
         <Avatar name={staff.name} size="lg" />
@@ -59,7 +61,7 @@ export function StaffProfileClient({ staff, classes, subjects, classAssign, subj
           <h1 className="text-headline-lg">{staff.name}</h1>
           <p className="text-body-md text-on-surface-variant capitalize">{staff.role?.replace('_', ' ')}</p>
         </div>
-        {staff.role === 'teacher' && (
+        {staff.role === 'teacher' && !readOnly && (
           <button className={btnOutline} onClick={() => setEditModal(true)}>
             <Icon name="edit" /> Edit Assignments
           </button>

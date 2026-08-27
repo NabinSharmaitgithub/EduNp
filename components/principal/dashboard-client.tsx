@@ -13,34 +13,30 @@ type Props = {
   announcements: AnnouncementRow[]
   pendingLeaveCount: number
   feeCollectionPct: number
+  avgPerformancePct: number
   error?: string
 }
 
 const QUICK_ACTIONS = [
-  { label: 'Add Class', href: '/classes', icon: 'add_circle', color: 'bg-blue-100 text-blue-600' },
+  { label: 'Add Class', href: '/principal/classes', icon: 'add_circle', color: 'bg-blue-100 text-blue-600' },
   { label: 'Add Staff', href: '/principal/staff', icon: 'person_add', color: 'bg-emerald-100 text-emerald-600' },
-  { label: 'Attendance', href: '/admin/attendance', icon: 'event_available', color: 'bg-violet-100 text-violet-600' },
-  { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', color: 'bg-amber-100 text-amber-600' },
+  { label: 'Attendance', href: '/principal/attendance', icon: 'event_available', color: 'bg-violet-100 text-violet-600' },
+  { label: 'Announcements', href: '/principal/announcements', icon: 'campaign', color: 'bg-amber-100 text-amber-600' },
 ]
 
-export function PrincipalDashboardClient({ classes, students, staff, announcements, pendingLeaveCount, feeCollectionPct, error }: Props) {
+export function PrincipalDashboardClient({ classes, students, staff, announcements, pendingLeaveCount, feeCollectionPct, avgPerformancePct, error }: Props) {
   const [search, setSearch] = useState('')
 
   const teacherCount = useMemo(() => staff.filter(s => s.role === 'teacher').length, [staff])
   const helpingStaffCount = useMemo(() => staff.filter(s => s.role === 'helping_staff').length, [staff])
   const totalStaff = teacherCount + helpingStaffCount
 
-  const avgPerformance = useMemo(() => {
-    if (!students.length) return 0
-    return Math.round(Math.random() * 15 + 70)
-  }, [students])
-
   const kpis = [
     { label: 'Total Students', value: students.length, icon: 'school', color: 'bg-blue-100 text-blue-600' },
     { label: 'Total Classes', value: classes.length, icon: 'class', color: 'bg-violet-100 text-violet-600' },
     { label: 'Total Staff', value: totalStaff, icon: 'people', color: 'bg-emerald-100 text-emerald-600' },
     { label: 'Pending Leave', value: pendingLeaveCount, icon: 'event_busy', color: pendingLeaveCount > 0 ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600' },
-    { label: 'Avg. Performance', value: `${avgPerformance}%`, icon: 'trending_up', color: 'bg-indigo-100 text-indigo-600' },
+    { label: 'Avg. Performance', value: `${avgPerformancePct}%`, icon: 'trending_up', color: 'bg-indigo-100 text-indigo-600' },
     { label: 'Fee Collection', value: `${feeCollectionPct}%`, icon: 'payments', color: 'bg-rose-100 text-rose-600' },
   ]
 
@@ -95,7 +91,7 @@ export function PrincipalDashboardClient({ classes, students, staff, announcemen
         <div className="lg:col-span-3 bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/50 shadow-bloom">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-title-lg font-semibold">My Classes</h2>
-            <Link href="/classes" className="text-primary text-body-sm font-medium hover:underline">View All</Link>
+            <Link href="/principal/classes" className="text-primary text-body-sm font-medium hover:underline">View All</Link>
           </div>
           <input
             type="search"
@@ -130,7 +126,7 @@ export function PrincipalDashboardClient({ classes, students, staff, announcemen
         <div className="lg:col-span-2 bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/50 shadow-bloom">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-title-lg font-semibold">Announcements</h2>
-            <Link href="/admin/announcements" className="text-primary text-body-sm font-medium hover:underline">View All</Link>
+            <Link href="/principal/announcements" className="text-primary text-body-sm font-medium hover:underline">View All</Link>
           </div>
           {announcements.length === 0 ? (
             <EmptyState icon="campaign" title="No announcements" hint="No recent announcements." />

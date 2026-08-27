@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ReportClient } from "@/components/report-client";
+import { getUserRole, roleHome } from "@/app/actions";
 import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export default async function ClassReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const sb = await createClient();
+  const homeHref = await roleHome(await getUserRole());
   const [cls, students, marks, subjects] = await Promise.all([
     sb.from("classes").select("*").eq("id", id).single(),
     sb.from("students").select("*").eq("class_id", id),
@@ -22,6 +24,7 @@ export default async function ClassReportPage({ params }: { params: Promise<{ id
         (students.data ?? []).some((s) => s.id === m.student_id),
       ) as MarkRow[]}
       subjects={(subjects.data ?? []) as SubjectRow[]}
+      homeHref={homeHref}
     />
   );
 }

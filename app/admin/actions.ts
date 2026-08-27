@@ -123,6 +123,7 @@ export async function createStaff(input: CreateStaffInput) {
   await logAuditEvent('create', 'staff', staff.id, { name: staff.name, email: staff.email, role: staff.role })
   revalidatePath('/admin/staff')
   revalidatePath('/admin/assignments')
+  revalidatePath('/principal/staff'); revalidatePath('/principal/assignments'); revalidatePath('/principal/performance'); revalidatePath('/principal')
   return { data: staff, temporaryPassword: tempPassword }
 }
 
@@ -155,6 +156,7 @@ export async function updateStaff(id: string, values: {
   if (error) return { error: error.message }
   await logAuditEvent('update', 'staff', id, clean)
   revalidatePath('/admin/staff')
+  revalidatePath('/principal/staff'); revalidatePath('/principal/performance'); revalidatePath('/principal')
   return {}
 }
 
@@ -173,6 +175,7 @@ export async function deactivateStaff(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('deactivate', 'staff', id)
   revalidatePath('/admin/staff')
+  revalidatePath('/principal/staff'); revalidatePath('/principal/performance'); revalidatePath('/principal')
   return {}
 }
 
@@ -182,6 +185,7 @@ export async function assignClassTeacher(teacherId: string, classId: string) {
   if (error) return { error: error.message }
   await logAuditEvent('assign', 'teacher_class_assignments', undefined, { teacherId, classId })
   revalidatePath('/admin/assignments')
+  revalidatePath('/principal/assignments')
   return {}
 }
 
@@ -191,6 +195,7 @@ export async function removeClassTeacher(classId: string) {
   if (error) return { error: error.message }
   await logAuditEvent('remove', 'teacher_class_assignments', undefined, { classId })
   revalidatePath('/admin/assignments')
+  revalidatePath('/principal/assignments')
   return {}
 }
 
@@ -200,6 +205,7 @@ export async function assignSubjectTeacher(teacherId: string, subjectId: string,
   if (error) return { error: error.message }
   await logAuditEvent('assign', 'teacher_subject_assignments', undefined, { teacherId, subjectId, classId })
   revalidatePath('/admin/assignments')
+  revalidatePath('/principal/assignments')
   return {}
 }
 
@@ -209,6 +215,7 @@ export async function removeSubjectTeacher(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('remove', 'teacher_subject_assignments', id)
   revalidatePath('/admin/assignments')
+  revalidatePath('/principal/assignments')
   return {}
 }
 
@@ -231,6 +238,7 @@ export async function updateTeacherAssignments(teacherId: string, classId: strin
   await logAuditEvent('update', 'teacher_assignments', teacherId, { classId, subjectCount: subjects.length })
   revalidatePath('/admin/assignments')
   revalidatePath(`/admin/staff/${teacherId}`)
+  revalidatePath('/principal/assignments'); revalidatePath('/principal/performance')
   return {}
 }
 
@@ -240,6 +248,7 @@ export async function bulkMarkAttendance(classId: string, date: string, records:
   const { error } = await supabase.from('attendance').upsert(rows, { onConflict: 'student_id,date' })
   if (error) return { error: error.message }
   revalidatePath('/admin/attendance')
+  revalidatePath('/principal/attendance'); revalidatePath('/principal')
   return {}
 }
 
@@ -249,6 +258,7 @@ export async function createTimetableEntry(values: { class_id: string; subject_i
   if (error) return { error: error.message }
   await logAuditEvent('create', 'timetable', data.id, values)
   revalidatePath('/admin/timetable')
+  revalidatePath('/principal/timetable')
   return { data }
 }
 
@@ -258,6 +268,7 @@ export async function deleteTimetableEntry(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'timetable', id)
   revalidatePath('/admin/timetable')
+  revalidatePath('/principal/timetable')
   return {}
 }
 
@@ -267,6 +278,7 @@ export async function createFee(values: { student_id: string; amount_due: number
   if (error) return { error: error.message }
   await logAuditEvent('create', 'fees', data.id, values)
   revalidatePath('/admin/fees')
+  revalidatePath('/principal/fees'); revalidatePath('/principal')
   return { data }
 }
 
@@ -276,6 +288,7 @@ export async function updateFeePayment(id: string, amountPaid: number, receiptNu
   if (error) return { error: error.message }
   await logAuditEvent('update', 'fees', id, { amountPaid, receiptNumber })
   revalidatePath('/admin/fees')
+  revalidatePath('/principal/fees'); revalidatePath('/principal')
   return {}
 }
 
@@ -287,6 +300,7 @@ export async function createAnnouncement(values: { title: string; body: string; 
   if (error) return { error: error.message }
   await logAuditEvent('create', 'announcements', data.id, values)
   revalidatePath('/admin/announcements')
+  revalidatePath('/principal/announcements'); revalidatePath('/principal')
   return { data }
 }
 
@@ -296,6 +310,7 @@ export async function deleteAnnouncement(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'announcements', id)
   revalidatePath('/admin/announcements')
+  revalidatePath('/principal/announcements'); revalidatePath('/principal')
   return {}
 }
 
@@ -305,6 +320,7 @@ export async function createExam(values: { name: string; class_id: string; start
   if (error) return { error: error.message }
   await logAuditEvent('create', 'exams', data.id, values)
   revalidatePath('/admin/exams')
+  revalidatePath('/principal/exams')
   return { data }
 }
 
@@ -314,6 +330,7 @@ export async function deleteExam(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'exams', id)
   revalidatePath('/admin/exams')
+  revalidatePath('/principal/exams')
   return {}
 }
 
@@ -323,6 +340,7 @@ export async function assignExamDuty(examId: string, teacherId: string, classId:
   if (error) return { error: error.message }
   await logAuditEvent('assign', 'exam_duties', undefined, { examId, teacherId, classId, role })
   revalidatePath('/admin/exams')
+  revalidatePath('/principal/exams')
   return {}
 }
 
@@ -332,6 +350,7 @@ export async function removeExamDuty(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('remove', 'exam_duties', id)
   revalidatePath('/admin/exams')
+  revalidatePath('/principal/exams')
   return {}
 }
 
@@ -341,6 +360,7 @@ export async function approveLeaveRequest(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('approve', 'leave_requests', id)
   revalidatePath('/admin/leave')
+  revalidatePath('/principal/leave'); revalidatePath('/principal')
   return {}
 }
 
@@ -350,6 +370,7 @@ export async function rejectLeaveRequest(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('reject', 'leave_requests', id)
   revalidatePath('/admin/leave')
+  revalidatePath('/principal/leave'); revalidatePath('/principal')
   return {}
 }
 

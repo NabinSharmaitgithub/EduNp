@@ -15,7 +15,7 @@ export async function saveClass(values: { name: string; section: string; id?: st
     if (error) return { error: error.message }
     await logAuditEvent('create', 'classes', data.id, values)
   }
-  revalidatePath('/admin'); revalidatePath('/classes')
+  revalidatePath('/admin'); revalidatePath('/admin/classes'); revalidatePath('/principal/classes'); revalidatePath('/classes'); revalidatePath('/principal')
   return {}
 }
 
@@ -24,7 +24,7 @@ export async function deleteClass(id: string) {
   const { error } = await supabase.from('classes').delete().eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'classes', id)
-  revalidatePath('/admin'); revalidatePath('/classes')
+  revalidatePath('/admin'); revalidatePath('/admin/classes'); revalidatePath('/principal/classes'); revalidatePath('/classes'); revalidatePath('/principal')
   return {}
 }
 
@@ -70,7 +70,7 @@ export async function saveStudent(values: StudentInput) {
     if (error) return { error: error.message }
     await logAuditEvent('create', 'students', data.id, values)
   }
-  revalidatePath('/classes'); revalidatePath(`/classes/${values.class_id}`)
+  revalidatePath('/classes'); revalidatePath(`/classes/${values.class_id}`); revalidatePath('/admin/classes'); revalidatePath('/principal/classes'); revalidatePath('/principal')
   return {}
 }
 
@@ -79,7 +79,7 @@ export async function deleteStudent(id: string, classId: string) {
   const { error } = await supabase.from('students').delete().eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'students', id)
-  revalidatePath(`/classes/${classId}`)
+  revalidatePath(`/classes/${classId}`); revalidatePath('/admin/classes'); revalidatePath('/principal/classes'); revalidatePath('/principal')
   return {}
 }
 
@@ -95,6 +95,7 @@ export async function saveSubject(values: { name: string; id?: string }) {
     await logAuditEvent('create', 'subjects', data.id, values)
   }
   revalidatePath('/admin')
+  revalidatePath('/principal'); revalidatePath('/principal/classes'); revalidatePath('/principal/timetable')
   return {}
 }
 
@@ -104,6 +105,7 @@ export async function deleteSubject(id: string) {
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'subjects', id)
   revalidatePath('/admin')
+  revalidatePath('/principal'); revalidatePath('/principal/classes'); revalidatePath('/principal/timetable')
   return {}
 }
 
@@ -119,7 +121,7 @@ export async function saveMark(values: { student_id: string; subject_id: string;
     if (error) return { error: error.message }
     await logAuditEvent('create', 'marks', data.id, values)
   }
-  revalidatePath('/students')
+  revalidatePath('/students'); revalidatePath('/principal')
   return {}
 }
 
@@ -130,6 +132,7 @@ export async function updateMarkValue(id: string, marks_obtained: number, studen
   await logAuditEvent('update', 'marks', id, { marks_obtained })
   revalidatePath(`/students/${studentId}`)
   if (classId) revalidatePath(`/classes/${classId}/report`)
+  revalidatePath('/principal')
   return {}
 }
 
@@ -138,7 +141,7 @@ export async function deleteMark(id: string, studentId: string) {
   const { error } = await supabase.from('marks').delete().eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'marks', id)
-  revalidatePath(`/students/${studentId}`)
+  revalidatePath(`/students/${studentId}`); revalidatePath('/principal')
   return {}
 }
 

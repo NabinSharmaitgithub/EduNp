@@ -83,7 +83,7 @@ export function PrincipalStaffClient({ staff, classes, subjects, error }: Props)
               {filtered.map(s => (
                 <tr key={s.id} className="hover:bg-primary-container/5 transition-colors">
                   <td className="py-3 px-6">
-                    <Link href={`/admin/staff/${s.id}`} className="font-medium hover:text-primary hover:underline">{s.name}</Link>
+                    <Link href={`/principal/staff/${s.id}`} className="font-medium hover:text-primary hover:underline">{s.name}</Link>
                   </td>
                   <td className="py-3 px-6"><span className={`text-label-md px-2 py-1 rounded-full capitalize ${ROLE_BADGE[s.role] ?? ''}`}>{s.role.replace('_', ' ')}</span></td>
                   <td className="py-3 px-6 text-on-surface-variant">{s.designation || '—'}</td>
@@ -92,7 +92,7 @@ export function PrincipalStaffClient({ staff, classes, subjects, error }: Props)
                     <span className={`text-label-md px-2 py-1 rounded-full ${s.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>{s.status}</span>
                   </td>
                   <td className="py-3 px-6 text-right space-x-2">
-                    <Link aria-label={`View ${s.name}`} href={`/admin/staff/${s.id}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full inline-flex">
+                    <Link aria-label={`View ${s.name}`} href={`/principal/staff/${s.id}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full inline-flex">
                       <Icon name="visibility" />
                     </Link>
                     <button aria-label={`Edit ${s.name}`} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full" onClick={() => setStaffModal({ open: true, edit: s })}>

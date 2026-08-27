@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { StudentView } from "@/components/student-view";
+import { getUserRole, roleHome } from "@/app/actions";
 import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
 
 export default async function StudentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const sb = await createClient();
+  const homeHref = await roleHome(await getUserRole());
   const [student, marks, subjects] = await Promise.all([
     sb.from("students").select("*").eq("id", id).single(),
     sb.from("marks").select("id,student_id,subject_id,exam_term,marks_obtained,max_marks").eq("student_id", id),
@@ -25,6 +27,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
       cls={cls}
       marks={(marks.data ?? []) as MarkRow[]}
       subjects={(subjects.data ?? []) as SubjectRow[]}
+      homeHref={homeHref}
     />
   );
 }
