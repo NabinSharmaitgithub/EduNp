@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function ClassesPage() { redirect("/dashboard"); }
+export default function ClassesPage() { redirect("/admin"); }

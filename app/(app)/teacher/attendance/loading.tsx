@@ -1,10 +1,9 @@
-export default function Loading() {
+export default function TeacherAttendanceSkeleton() {
   return (
-    <div className="p-6">
-      <div className="animate-pulse space-y-4">
-        <div className="h-8 w-48 bg-surface-dim rounded" />
-        <div className="h-4 w-96 bg-surface-dim rounded" />
-      </div>
+    <div className="max-w-5xl mx-auto w-full animate-pulse">
+      <div className="h-8 w-40 bg-gray-200 rounded mb-6" />
+      <div className="h-20 bg-gray-200 rounded-xl mb-6" />
+      <div className="h-80 bg-gray-200 rounded-xl" />
     </div>
   )
 }

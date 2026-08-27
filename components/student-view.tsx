@@ -67,7 +67,7 @@ export function StudentView({
     <>
       <header className="h-16 px-6 bg-surface flex items-center sticky top-0 z-40 border-b border-outline-variant/30">
         <nav className="flex items-center gap-2 text-body-sm text-on-surface-variant flex-wrap">
-          <Link href="/dashboard" className="hover:text-primary">Dashboard</Link>
+          <Link href="/admin" className="hover:text-primary">Dashboard</Link>
           {cls && (
             <>
               <span>/</span>

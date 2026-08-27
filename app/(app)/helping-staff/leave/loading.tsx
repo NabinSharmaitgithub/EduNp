@@ -1,4 +1,4 @@
-export default function TeacherLeaveSkeleton() {
+export default function HelpingStaffLeaveSkeleton() {
   return (
     <div className="max-w-3xl mx-auto w-full animate-pulse">
       <div className="flex justify-between items-center mb-6">

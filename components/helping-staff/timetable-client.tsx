@@ -3,9 +3,9 @@
 import { useMemo } from 'react'
 import { EmptyState } from '@/components/ui'
 import { DAYS_OF_WEEK } from '@/lib/types'
-import type { ClassRow, SubjectRow, TimetableRow } from '@/lib/types'
+import type { TimetableRow, ClassRow, SubjectRow } from '@/lib/types'
 
-export function TeacherTimetableClient({ timetable, classes, subjects }: {
+export function HelpingStaffTimetableClient({ timetable, classes, subjects }: {
   timetable: TimetableRow[]; classes: ClassRow[]; subjects: SubjectRow[]
 }) {
   const cName = useMemo(() => Object.fromEntries(classes.map(c => [c.id, c.name])), [classes])
@@ -26,18 +26,19 @@ export function TeacherTimetableClient({ timetable, classes, subjects }: {
 
   if (timetable.length === 0) return (
     <div className="max-w-5xl mx-auto w-full">
-      <h1 className="text-headline-lg mb-6">My Timetable</h1>
+      <h1 className="text-headline-lg mb-6">School Timetable</h1>
       <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/50 shadow-bloom">
-        <EmptyState icon="📅" title="No timetable entries" hint="Contact the principal." />
+        <EmptyState icon="📅" title="No timetable entries" hint="The timetable hasn't been set up yet." />
       </div>
     </div>
   )
 
-  const periodColors = ['bg-blue-50 border-blue-200 text-blue-900', 'bg-emerald-50 border-emerald-200 text-emerald-900', 'bg-amber-50 border-amber-200 text-amber-900', 'bg-purple-50 border-purple-200 text-purple-900', 'bg-rose-50 border-rose-200 text-rose-900', 'bg-cyan-50 border-cyan-200 text-cyan-900']
+  const periodColors = ['bg-blue-50 border-blue-200', 'bg-emerald-50 border-emerald-200', 'bg-amber-50 border-amber-200', 'bg-purple-50 border-purple-200', 'bg-rose-50 border-rose-200', 'bg-cyan-50 border-cyan-200']
 
   return (
     <div className="max-w-5xl mx-auto w-full">
-      <h1 className="text-headline-lg mb-6">My Timetable</h1>
+      <h1 className="text-headline-lg mb-6">School Timetable</h1>
+      <p className="text-body-md text-on-surface-variant mb-6">Read-only view of the school timetable.</p>
 
       <div className="space-y-6">
         {[...grouped.entries()].map(([day, entries]) => {

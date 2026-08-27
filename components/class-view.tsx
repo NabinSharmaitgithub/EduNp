@@ -63,7 +63,7 @@ export function ClassView({
     <>
       <header className="h-16 px-6 bg-surface flex justify-between items-center sticky top-0 z-40 border-b border-outline-variant/30">
         <nav className="flex items-center gap-2 text-body-sm text-on-surface-variant">
-          <Link href="/dashboard" className="hover:text-primary">Dashboard</Link>
+          <Link href="/admin" className="hover:text-primary">Dashboard</Link>
           <span>/</span>
           <span className="text-on-surface font-medium">{cls.name}</span>
         </nav>

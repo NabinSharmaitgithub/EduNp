@@ -1,12 +1,20 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { submitLeaveRequest, cancelLeaveRequest } from '@/app/teacher/actions'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, ConfirmDialog, btnOutline, btnPrimary, inputCls } from '@/components/ui'
 import type { LeaveRequestRow } from '@/lib/types'
 
-export function TeacherLeaveClient({ leave }: { leave: LeaveRequestRow[] }) {
+async function submitLeaveRequest(startDate: string, endDate: string, reason: string) {
+  const { submitLeaveRequest: fn } = await import('@/app/teacher/actions')
+  return fn(startDate, endDate, reason)
+}
+async function cancelLeaveRequest(id: string) {
+  const { cancelLeaveRequest: fn } = await import('@/app/teacher/actions')
+  return fn(id)
+}
+
+export function HelpingStaffLeaveClient({ leave }: { leave: LeaveRequestRow[] }) {
   const toast = useToast()
   const [pending, startTransition] = useTransition()
   const [addModal, setAddModal] = useState(false)

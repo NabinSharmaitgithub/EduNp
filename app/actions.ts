@@ -15,7 +15,7 @@ export async function saveClass(values: { name: string; section: string; id?: st
     if (error) return { error: error.message }
     await logAuditEvent('create', 'classes', data.id, values)
   }
-  revalidatePath('/dashboard'); revalidatePath('/classes')
+  revalidatePath('/admin'); revalidatePath('/classes')
   return {}
 }
 
@@ -24,7 +24,7 @@ export async function deleteClass(id: string) {
   const { error } = await supabase.from('classes').delete().eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'classes', id)
-  revalidatePath('/dashboard'); revalidatePath('/classes')
+  revalidatePath('/admin'); revalidatePath('/classes')
   return {}
 }
 
@@ -94,7 +94,7 @@ export async function saveSubject(values: { name: string; id?: string }) {
     if (error) return { error: error.message }
     await logAuditEvent('create', 'subjects', data.id, values)
   }
-  revalidatePath('/dashboard')
+  revalidatePath('/admin')
   return {}
 }
 
@@ -103,7 +103,7 @@ export async function deleteSubject(id: string) {
   const { error } = await supabase.from('subjects').delete().eq('id', id)
   if (error) return { error: error.message }
   await logAuditEvent('delete', 'subjects', id)
-  revalidatePath('/dashboard')
+  revalidatePath('/admin')
   return {}
 }
 
@@ -140,6 +140,24 @@ export async function deleteMark(id: string, studentId: string) {
   await logAuditEvent('delete', 'marks', id)
   revalidatePath(`/students/${studentId}`)
   return {}
+}
+
+const ROLE_HOME: Record<string, string> = {
+  admin: '/admin', principal: '/principal', teacher: '/teacher',
+  helping_staff: '/helping-staff', parent: '/parent',
+}
+
+export async function getUserRole(): Promise<string | null> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data: staff } = await supabase
+    .from('staff').select('role').eq('user_id', user.id).eq('status', 'active').single()
+  return staff?.role ?? null
+}
+
+export async function roleHome(role: string | null): Promise<string> {
+  return ROLE_HOME[role || ''] || '/login'
 }
 
 export async function completePasswordChange() {

@@ -10,14 +10,14 @@ import type { UserProfile } from '@/lib/types'
 const NAV: { label: string; href: string; icon: string; roles: UserProfile['role'][] }[] = [
   { label: 'Dashboard', href: '/admin', icon: 'dashboard', roles: ['admin'] },
   { label: 'Admins', href: '/admin/admins', icon: 'shield', roles: ['admin'] },
-  { label: 'Classes', href: '/classes', icon: 'school', roles: ['admin', 'teacher'] },
+  { label: 'Classes', href: '/classes', icon: 'school', roles: ['admin'] },
   { label: 'Staff', href: '/admin/staff', icon: 'people', roles: ['admin'] },
   { label: 'Directory', href: '/admin/directory', icon: 'badge', roles: ['admin'] },
   { label: 'Assignments', href: '/admin/assignments', icon: 'assignment_ind', roles: ['admin'] },
   { label: 'Attendance', href: '/admin/attendance', icon: 'event_available', roles: ['admin'] },
-  { label: 'Timetable', href: '/admin/timetable', icon: 'schedule', roles: ['admin', 'helping_staff'] },
+  { label: 'Timetable', href: '/admin/timetable', icon: 'schedule', roles: ['admin'] },
   { label: 'Fees', href: '/admin/fees', icon: 'payments', roles: ['admin'] },
-  { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', roles: ['admin', 'helping_staff'] },
+  { label: 'Announcements', href: '/admin/announcements', icon: 'campaign', roles: ['admin'] },
   { label: 'Exams', href: '/admin/exams', icon: 'quiz', roles: ['admin'] },
   { label: 'Leave', href: '/admin/leave', icon: 'event_busy', roles: ['admin'] },
   { label: 'Permissions', href: '/admin/permissions', icon: 'lock', roles: ['admin'] },
@@ -37,11 +37,16 @@ const NAV: { label: string; href: string; icon: string; roles: UserProfile['role
   { label: 'Leave', href: '/admin/leave', icon: 'event_busy', roles: ['principal'] },
   { label: 'Audit Log', href: '/admin/audit-log', icon: 'history', roles: ['principal'] },
   { label: 'Import', href: '/admin/import', icon: 'upload_file', roles: ['principal'] },
-  { label: 'Dashboard', href: '/dashboard', icon: 'dashboard', roles: ['teacher'] },
+  { label: 'Dashboard', href: '/teacher', icon: 'dashboard', roles: ['teacher'] },
+  { label: 'My Classes', href: '/teacher/classes', icon: 'school', roles: ['teacher'] },
   { label: 'Attendance', href: '/teacher/attendance', icon: 'event_available', roles: ['teacher'] },
   { label: 'Marks', href: '/teacher/marks', icon: 'grade', roles: ['teacher'] },
   { label: 'Timetable', href: '/teacher/timetable', icon: 'schedule', roles: ['teacher'] },
   { label: 'Leave', href: '/teacher/leave', icon: 'event_busy', roles: ['teacher'] },
+  { label: 'Dashboard', href: '/helping-staff', icon: 'dashboard', roles: ['helping_staff'] },
+  { label: 'Timetable', href: '/helping-staff/timetable', icon: 'schedule', roles: ['helping_staff'] },
+  { label: 'Announcements', href: '/helping-staff/announcements', icon: 'campaign', roles: ['helping_staff'] },
+  { label: 'Leave', href: '/helping-staff/leave', icon: 'event_busy', roles: ['helping_staff'] },
   { label: 'Dashboard', href: '/parent', icon: 'dashboard', roles: ['parent'] },
 ]
 
@@ -51,7 +56,7 @@ export default function Shell({ user, profile, children }: { user: { email: stri
   const router = useRouter()
   const nav = NAV.filter(i => i.roles.includes(profile.role))
 
-  const active = (href: string) => href === '/admin' || href === '/parent' ? pathname === href : pathname === href || pathname.startsWith(href + '/')
+  const active = (href: string) => ['/admin', '/parent', '/helping-staff'].includes(href) ? pathname === href : pathname === href || pathname.startsWith(href + '/')
 
   const pageTitle = nav.find(i => active(i.href))?.label ?? 'Dashboard'
 
@@ -62,7 +67,10 @@ export default function Shell({ user, profile, children }: { user: { email: stri
       <div className="px-6 py-5 border-b border-white/10">
         <h1 className="text-xl font-bold">EduSchool</h1>
         <span className={`inline-block mt-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
-          profile.role === 'admin' ? 'bg-amber-400 text-amber-950' : 'bg-blue-300/20 text-blue-200'
+          profile.role === 'admin' ? 'bg-amber-400 text-amber-950'
+          : profile.role === 'principal' ? 'bg-blue-300/20 text-blue-200'
+          : profile.role === 'teacher' ? 'bg-emerald-400 text-emerald-950'
+          : 'bg-gray-300/20 text-gray-200'
         }`}>{profile.role}</span>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">

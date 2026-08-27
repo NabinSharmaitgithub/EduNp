@@ -5,6 +5,7 @@ import { useState } from "react";
 import { sb } from "@/lib/supabase/client";
 import { useToast } from "@/components/toast";
 import { Field, Spinner, btnPrimary, inputCls } from "@/components/ui";
+import { getUserRole, roleHome } from "@/app/actions";
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -42,7 +43,8 @@ export function AuthForm() {
           toast("error", error.message);
         } else {
           toast("success", "Welcome back!");
-          router.replace("/dashboard");
+          const role = await getUserRole();
+          router.replace(await roleHome(role));
         }
       } else {
         const { data, error } = await supabase.auth.signUp({ email, password });
@@ -51,7 +53,8 @@ export function AuthForm() {
           toast("error", error.message);
         } else if (data.session) {
           toast("success", "Account created!");
-          router.replace("/dashboard");
+          const role = await getUserRole();
+          router.replace(await roleHome(role));
         } else {
           toast("success", "Check your inbox to confirm your email, then log in.");
           setTab("login");

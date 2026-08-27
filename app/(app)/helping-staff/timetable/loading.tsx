@@ -1,7 +1,8 @@
-export default function TeacherTimetableSkeleton() {
+export default function HelpingStaffTimetableSkeleton() {
   return (
     <div className="max-w-5xl mx-auto w-full animate-pulse">
-      <div className="h-8 w-40 bg-gray-200 rounded mb-6" />
+      <div className="h-8 w-48 bg-gray-200 rounded mb-4" />
+      <div className="h-4 w-64 bg-gray-200 rounded mb-6" />
       <div className="space-y-6">
         {[1,2,3].map(i => (
           <div key={i}>

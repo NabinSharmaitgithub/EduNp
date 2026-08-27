@@ -5,15 +5,7 @@ import { useRouter } from 'next/navigation'
 import { sb } from '@/lib/supabase/client'
 import { useToast } from '@/components/toast'
 import { Field, Spinner, btnPrimary, inputCls } from '@/components/ui'
-import { completePasswordChange } from '@/app/actions'
-
-const ROLE_HOME: Record<string, string> = {
-  admin: '/admin',
-  principal: '/admin',
-  teacher: '/teacher',
-  helping_staff: '/dashboard',
-  parent: '/parent',
-}
+import { completePasswordChange, roleHome } from '@/app/actions'
 
 export default function SetPasswordPage() {
   const router = useRouter()
@@ -52,7 +44,7 @@ export default function SetPasswordPage() {
 
       toast('success', 'Password updated!')
 
-      const dest = ROLE_HOME[role] || '/dashboard'
+      const dest = await roleHome(role)
       router.replace(dest)
     } catch {
       toast('error', 'Failed to update password')
