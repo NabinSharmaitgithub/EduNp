@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { sb as createClient } from '@/lib/supabase/client'
@@ -55,8 +55,22 @@ export default function Shell({ user, profile, children }: { user: { email: stri
   const pathname = usePathname()
   const router = useRouter()
   const nav = NAV.filter(i => i.roles.includes(profile.role))
+  const HOME_ROUTES = new Set(['/admin', '/principal', '/teacher', '/parent', '/helping-staff'])
 
-  const active = (href: string) => ['/admin', '/parent', '/helping-staff'].includes(href) ? pathname === href : pathname === href || pathname.startsWith(href + '/')
+  const active = (href: string) =>
+    HOME_ROUTES.has(href) ? pathname === href : pathname === href || pathname.startsWith(href + '/')
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    window.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [mobileOpen])
 
   const pageTitle = nav.find(i => active(i.href))?.label ?? 'Dashboard'
 
@@ -101,8 +115,8 @@ export default function Shell({ user, profile, children }: { user: { email: stri
       <aside className="hidden lg:flex lg:flex-col w-64 bg-[#002053] text-white shrink-0"><Side /></aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#002053] text-white flex flex-col"><Side /></aside>
+          <div className="absolute inset-0 bg-black/50 pointer-events-auto" onClick={() => setMobileOpen(false)} />
+          <aside className="pointer-events-auto absolute left-0 top-0 bottom-0 w-64 bg-[#002053] text-white flex flex-col shadow-2xl" onClick={e => e.stopPropagation()}><Side /></aside>
         </div>
       )}
       <div className="flex-1 flex flex-col overflow-hidden">
