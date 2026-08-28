@@ -7,6 +7,7 @@ import { deleteStudent, saveStudent, type StudentInput } from "@/app/actions";
 import { Icon } from "@/components/icon";
 import { useToast } from "@/components/toast";
 import { Avatar, EmptyState, Field, GradePill, Modal, Progress, Spinner, btnOutline, btnPrimary, inputCls } from "@/components/ui";
+import { PhotoField } from "@/components/photo-field";
 import { computeStudentStats } from "@/lib/stats";
 import { BLOOD_GROUPS } from "@/lib/types";
 import type { ClassRow, MarkRow, StudentRow, SubjectRow } from "@/lib/types";
@@ -220,6 +221,7 @@ function StudentModal({
   const [iems, setIems] = useState(initial?.iems_number ?? "");
   const [admissionDate, setAdmissionDate] = useState(initial?.admission_date ?? "");
   const [bloodGroup, setBloodGroup] = useState(initial?.blood_group ?? "");
+  const [photoUrl, setPhotoUrl] = useState<string | null>(initial?.photo_url ?? null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function submit(e: React.FormEvent) {
@@ -239,6 +241,7 @@ function StudentModal({
       guardian_contact_number: guardianPhone || undefined, emergency_contact_number: emergencyPhone || undefined,
       student_address: address || undefined, iems_number: iems || undefined,
       admission_date: admissionDate || undefined, blood_group: bloodGroup || undefined,
+      photo_url: photoUrl ?? undefined,
     });
   }
 
@@ -280,6 +283,8 @@ function StudentModal({
             <input className={inputCls} placeholder="123 Main St" value={address} onChange={(e) => setAddress(e.target.value)} />
           </Field>
         </div>
+
+        <PhotoField value={photoUrl} onChange={setPhotoUrl} />
 
         <h4 className="text-title-sm font-semibold text-primary mt-2">Parent / Guardian</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

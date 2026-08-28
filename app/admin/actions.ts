@@ -14,6 +14,7 @@ type CreateStaffInput = {
   date_of_birth?: string; gender?: string; contact_number?: string
   emergency_contact_number?: string; address?: string; qualification?: string
   designation?: string; subject_specialization?: string; date_of_joining?: string
+  photo_url?: string
   teacher_class_id?: string
   teacher_subjects?: { subject_id: string; class_id: string }[]
 }
@@ -96,6 +97,7 @@ export async function createStaff(input: CreateStaffInput) {
     designation: input.designation || null,
     subject_specialization: input.subject_specialization || null,
     date_of_joining: input.date_of_joining || null,
+    photo_url: input.photo_url || null,
   }
 
   const { data: staff, error: staffErr } = await supabase.from('staff').insert(staffRow).select().single()

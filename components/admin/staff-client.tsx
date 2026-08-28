@@ -6,6 +6,7 @@ import { createStaff, updateStaff, deactivateStaff, createParent, deactivatePare
 import { Icon } from '@/components/icon'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, btnDanger, inputCls } from '@/components/ui'
+import { PhotoField } from '@/components/photo-field'
 import type { StaffRow, ParentRow, ClassRow, SubjectRow, StaffRole, UserProfile } from '@/lib/types'
 
 type StaffClientProps = {
@@ -219,6 +220,7 @@ function StaffModal({ open, edit, classes, subjects, callerRole, onClose, onSubm
   const [designation, setDesignation] = useState(edit?.designation ?? '')
   const [subjectSpec, setSubjectSpec] = useState(edit?.subject_specialization ?? '')
   const [doj, setDoj] = useState(edit?.date_of_joining ?? '')
+  const [photoUrl, setPhotoUrl] = useState<string | null>(edit?.photo_url ?? null)
 
   // Teacher-only assignment state (only for create)
   const [classTeacherId, setClassTeacherId] = useState(edit?.role === 'teacher' ? '' : '')
@@ -247,6 +249,7 @@ function StaffModal({ open, edit, classes, subjects, callerRole, onClose, onSubm
       address: address || undefined, qualification: qualification || undefined,
       designation: designation || undefined, subject_specialization: subjectSpec || undefined,
       date_of_joining: doj || undefined,
+      photo_url: photoUrl,
     }
     if (!isEdit && role === 'teacher') {
       if (classTeacherId) v.teacher_class_id = classTeacherId
@@ -281,6 +284,8 @@ function StaffModal({ open, edit, classes, subjects, callerRole, onClose, onSubm
             </select>
           </Field>
         </div>
+
+        <PhotoField value={photoUrl} onChange={setPhotoUrl} />
 
         {/* Contact */}
         <p className="text-label-lg text-on-surface-variant border-b border-outline-variant/30 pb-1">Contact</p>

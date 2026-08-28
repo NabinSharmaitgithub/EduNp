@@ -6,6 +6,7 @@ import { createStaff, updateStaff, deactivateStaff } from '@/app/admin/actions'
 import { Icon } from '@/components/icon'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, btnDanger, inputCls, Avatar, ConfirmDialog } from '@/components/ui'
+import { PhotoField } from '@/components/photo-field'
 import type { StaffRow, ClassRow, SubjectRow, StaffRole } from '@/lib/types'
 
 type Props = { admins: StaffRow[]; error?: string }
@@ -185,6 +186,7 @@ function StaffModal({ open, edit, onClose, onSubmit }: {
   const [qualification, setQualification] = useState(edit?.qualification ?? '')
   const [designation, setDesignation] = useState(edit?.designation ?? '')
   const [doj, setDoj] = useState(edit?.date_of_joining ?? '')
+  const [photoUrl, setPhotoUrl] = useState<string | null>(edit?.photo_url ?? null)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   function validate() {
@@ -207,6 +209,7 @@ function StaffModal({ open, edit, onClose, onSubmit }: {
       contact_number: contact || undefined, emergency_contact_number: emergContact || undefined,
       address: address || undefined, qualification: qualification || undefined,
       designation: designation || undefined, date_of_joining: doj || undefined,
+      photo_url: photoUrl,
     })
   }
 
@@ -233,6 +236,8 @@ function StaffModal({ open, edit, onClose, onSubmit }: {
             </select>
           </Field>
         </div>
+
+        <PhotoField value={photoUrl} onChange={setPhotoUrl} />
 
         <p className="text-label-lg text-on-surface-variant border-b border-outline-variant/30 pb-1">Contact</p>
         <div className="grid grid-cols-2 gap-3">

@@ -6,6 +6,7 @@ import { createStaff, updateStaff, deactivateStaff } from '@/app/admin/actions'
 import { Icon } from '@/components/icon'
 import { useToast } from '@/components/toast'
 import { EmptyState, Field, Modal, Spinner, btnOutline, btnPrimary, btnDanger, inputCls, ConfirmDialog } from '@/components/ui'
+import { PhotoField } from '@/components/photo-field'
 import type { StaffRow, ClassRow, SubjectRow, StaffRole } from '@/lib/types'
 
 type Props = { staff: StaffRow[]; classes: ClassRow[]; subjects: SubjectRow[]; error?: string }
@@ -181,6 +182,7 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: {
   const [designation, setDesignation] = useState(edit?.designation ?? '')
   const [subjectSpec, setSubjectSpec] = useState(edit?.subject_specialization ?? '')
   const [doj, setDoj] = useState(edit?.date_of_joining ?? '')
+  const [photoUrl, setPhotoUrl] = useState<string | null>(edit?.photo_url ?? null)
   const [classTeacherId, setClassTeacherId] = useState('')
   const [subjectRows, setSubjectRows] = useState<{ subject_id: string; class_id: string }[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -205,6 +207,7 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: {
       address: address || undefined, qualification: qualification || undefined,
       designation: designation || undefined, subject_specialization: subjectSpec || undefined,
       date_of_joining: doj || undefined,
+      photo_url: photoUrl,
     }
     if (!isEdit && role === 'teacher') {
       if (classTeacherId) v.teacher_class_id = classTeacherId
@@ -235,6 +238,7 @@ function StaffModal({ open, edit, classes, subjects, onClose, onSubmit }: {
             </select>
           </Field>
         </div>
+        <PhotoField value={photoUrl} onChange={setPhotoUrl} />
         <p className="text-label-lg text-on-surface-variant border-b border-outline-variant/30 pb-1">Contact</p>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Contact Number" error={errors.contact}><input className={inputCls} type="tel" value={contact} onChange={e => setContact(e.target.value)} placeholder="7-15 digits" /></Field>
